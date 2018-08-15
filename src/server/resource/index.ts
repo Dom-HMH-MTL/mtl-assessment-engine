@@ -1,0 +1,1 @@
+export { ProblemResource } from './ProblemResource';

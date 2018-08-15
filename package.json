@@ -1,0 +1,58 @@
+{
+    "name": "assessment-engine",
+    "version": "1.0.0",
+    "description": "Components for the assessment engine",
+    "main": "./dist/server/index.js",
+    "module": "dist/client/index.js",
+    "types": "dist/server/index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hmhco/mtl-assessment-engine.git"
+    },
+    "author": "Dom Derrien <dom.derrien@hmhco.com>",
+    "license": "HMH license",
+    "private": true,
+    "publishConfig": {
+        "registry": "http://npm.tribalnova.com"
+    },
+    "dependencies": {
+        "@hmh/nodejs-base-server": "latest",
+        "@material/button": "latest",
+        "@material/checkbox": "latest",
+        "@material/form-field": "latest",
+        "@polymer/lit-element": "latest",
+        "node-fetch": "latest",
+        "reflect-metadata": "latest"
+    },
+    "devDependencies": {
+        "@types/node": "latest",
+        "@types/node-fetch": "latest",
+        "@types/sinon": "latest",
+        "concurrently": "latest",
+        "intern": "latest",
+        "nodemon": "latest",
+        "npm-watch": "latest",
+        "sinon": "latest",
+        "source-map-support": "latest",
+        "tslint": "latest",
+        "typescript": "latest"
+    },
+    "watch": {
+        "_copyJson": "src/server/config.json"
+    },
+    "scripts": {
+        "clean": "rm -rf node_modules dist package-lock.json",
+        "_shareModelDefs": "mkdir dist; mkdir dist/server; pushd ./src/client; ln -s ../server/model/ .; popd",
+        "_copyJson": "cp ./src/server/config.json ./dist/server",
+        "_firstCompilation": "tsc -p ./src/server; tsc -p ./src/client; tsc -p ./src/server-unit; tsc -p ./src/client-unit",
+        "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation",
+        "_watchJson": "npm-watch _copyJson",
+        "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run _watchJson'",
+        "dev": "nodemon -r source-map-support/register dist/server/server.js --watch ./dist/server",
+        "debug": "nodemon --inspect -r source-map-support/register dist/server/server.js --watch ./dist/server",
+        "start": "node dist/server/server.js",
+        "test": "intern config=src/server-unit/intern.json",
+        "test-polymer": "polymer test -l chrome -p",
+        "lint": "tslint -t stylish -p src/tsconfig.json"
+    }
+}

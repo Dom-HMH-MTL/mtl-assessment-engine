@@ -1,0 +1,20 @@
+{
+    "extends": "../tsconfig",
+    "compilerOptions": {
+        "module": "esnext",
+        "rootDir": "../",
+        "outDir": "../../dist",
+        "noImplicitAny": false,
+        "lib": ["esnext", "dom"],
+        "paths": {
+            "@hmh/nodejs-base-server": ["node_modules/@hmh/nodejs-base-server/dist/client/index"],
+            "@hmh/*": ["node_modules/@hmh/*"],
+            "@polymer/*": ["node_modules/@polymer/*"],
+            "lit-html/*": ["node_modules/lit-html/*"],
+            "pwa-helpers/*": ["node_modules/pwa-helpers/*"],
+            "redux/*": ["node_modules/redux/*"],
+            "redux-thunk/*": ["node_modules/redux-thunk/*"]
+        }
+    },
+    "include": ["../../src/client-unit/**/*.ts", "../typings.d.ts"]
+}
