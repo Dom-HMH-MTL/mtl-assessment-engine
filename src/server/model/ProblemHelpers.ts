@@ -1,6 +1,5 @@
 import { Problem } from './Problem';
-import { Variable } from './Variable';
-import { prepareValue } from './VariableHelpers';
+import { injectVariables } from './VariableHelpers';
 
 export const prepareStatements = (problem: Problem): string[] => {
     if (!problem.cachedStatemnents) {
@@ -9,15 +8,15 @@ export const prepareStatements = (problem: Problem): string[] => {
     return problem.cachedStatemnents;
 };
 
-function injectVariables(statement: string, variables: Variable[]): string {
-    variables.forEach(
-        (variable: Variable, index: number): void => {
-            statement = statement.replace(`$V[${index}]`, prepareValue(variable, variables));
-        }
-    );
-    return statement;
-}
-
-function cleanHTML(statement: string): string {
+export function cleanHTML(statement: any): string {
+    if (statement === undefined || statement === null) {
+        return '';
+    }
+    if (typeof statement === 'number') {
+        return Number(statement).toString();
+    }
+    if (typeof statement !== 'string') {
+        return cleanHTML(statement.toString());
+    }
     return statement;
 }

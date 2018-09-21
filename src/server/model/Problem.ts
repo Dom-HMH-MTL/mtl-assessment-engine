@@ -7,8 +7,8 @@ export class Problem extends Parent {
         return new Problem();
     }
 
-    public template: string[];
-    public variables: Variable[];
+    public template: string[] = [];
+    public variables: Variable[] = [];
 
     public fromDdb(content: { [key: string]: any }): Problem {
         super.fromDdb(content);
