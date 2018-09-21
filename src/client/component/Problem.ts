@@ -1,10 +1,12 @@
-import { html, LitElement, TemplateResult } from '@polymer/lit-element/lit-element.js';
-import { Problem as Model } from '../model/Problem.js';
+import { html, LitElement, TemplateResult } from '@polymer/lit-element';
+import { unsafeHTML } from 'lit-html/lib/unsafe-html';
+import { Problem as Model } from '../model/Problem';
+import { prepareStatements } from '../model/ProblemHelpers';
 
 export class Problem extends LitElement {
     static get properties(): { [key: string]: string | object } {
         return {
-            problem: Object
+            entity: Object
         };
     }
 
@@ -13,12 +15,34 @@ export class Problem extends LitElement {
     public addEventListener: (eventName: string, listener: EventListener) => void;
     public getAttribute: (attr: string) => string;
 
-    public problem: Model;
+    public entity: Model = null;
 
-    protected _render({ problem }: Problem): TemplateResult {
+    protected _shouldRender() {
+        return this.entity !== null;
+    }
+
+    protected _render({ entity }: Problem): TemplateResult {
         return html`
-        ${JSON.stringify(problem)}
+        <style>
+            #template {
+                border: 1px solid grey;
+                min-height: 1em;
+            }
+            #check {
+                float: right;
+            }
+        </style>
+
+        <div id="template">${unsafeHTML(this.prepareStatements().join('\n'))}</div>
+        <button id="check">Check</button>
         `;
+    }
+
+    private prepareStatements(): string[] {
+        if (this.entity === null) {
+            return ['No entity assigned to the component yet!'];
+        }
+        return prepareStatements(this.entity);
     }
 }
 

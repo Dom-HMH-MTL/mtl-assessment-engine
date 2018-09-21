@@ -10,7 +10,20 @@
             "defaultClientContentPath": "../../src/client/index.html",
             "port": 8686,
             "staticContentMaxAge": 0,
-            "staticFolderMapping": {}
+            "staticFolderMapping": {
+                "/images": "../../src/client/images"
+            }
+        },
+        "AWS": {
+            "dbTablePrefix": "ang-eng-",
+            "DynamoDB": {
+                "region": "us-west-2",
+                "endpoint": "http://localhost:8000",
+                "credentials": {
+                    "accessKeyId": "AKID",
+                    "secretAccessKey": "SECRET"
+                }
+            }
         }
     },
     "prod": {
@@ -23,7 +36,20 @@
             "defaultClientContentPath": "../../src/client/index.html",
             "port": 8686,
             "staticContentMaxAge": 3000000,
-            "staticFolderMapping": {}
+            "staticFolderMapping": {
+                "/images": "../../src/client/images"
+            }
+        },
+        "AWS": {
+            "dbTablePrefix": "ang-eng-",
+            "DynamoDB": {
+                "region": "us-east-1",
+                "endpoint": "http://localhost:8000",
+                "credentials": {
+                    "accessKeyId": "AKID",
+                    "secretAccessKey": "SECRET"
+                }
+            }
         }
     }
 }

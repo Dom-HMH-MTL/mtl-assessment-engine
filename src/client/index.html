@@ -1,18 +1,25 @@
 <html>
     <head>
-        <title>Test page</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+        <title>HMH - Assessment Engine</title>
+        <meta name="description" content="HMH Assessment Catalog">
+
+        <link rel="icon" href="/images/hmhco.com.png">
     </head>
     <body>
         <h1>Assessment Engine</h1>
 
-        <div id="problem"></div>
+        <ul id="hooks"></ul>
+
+        <div id="showcase"></div>
 
         <script type="module">
-            import { displayProblem } from './app/index.js';
+            import { addLinks, setupRouter } from '/app/index.js';
 
-            (async function() {
-                await displayProblem('problem');
-            })();
+            addLinks('hooks');
+            setupRouter('showcase');
         </script>
     </body>
 </html>

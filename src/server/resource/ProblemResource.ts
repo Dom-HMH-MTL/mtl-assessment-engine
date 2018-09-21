@@ -16,6 +16,6 @@ export class ProblemResource extends BaseResource<Service> {
         super(Service.getInstance());
     }
     protected getServiceType(): string {
-        return 'cc-proxy';
+        return 'ang-eng';
     }
 }
