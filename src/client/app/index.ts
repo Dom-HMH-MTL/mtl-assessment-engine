@@ -1,4 +1,4 @@
-import { Problem as Component } from '../component/Problem';
+import { ProblemRunner as Component } from '../component/ProblemRunner';
 import { Problem as Model } from '../model/Problem';
 
 async function loadProblem(id: string): Promise<Model> {
@@ -16,7 +16,8 @@ export function addLinks(tagetUlId: string): void {
         { href: '/problem/text', text: 'Just text' },
         { href: '/problem/html', text: 'Basic HTML' },
         { href: '/problem/oneTextValue', text: 'With one text value' },
-        { href: '/problem/withIntervalValue', text: 'With interval value' }
+        { href: '/problem/withIntervalValue', text: 'With interval value' },
+        { href: '/problem/oneTextField', text: 'With an interactive text field' }
     ];
     const clickListener: (event: MouseEvent) => void = (event: MouseEvent): void => {
         event.preventDefault();

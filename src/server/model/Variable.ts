@@ -1,10 +1,12 @@
 import { BaseModel as Parent } from './BaseModel';
 
 export enum VariableType {
+    boolean = 'boolean',
     expression = 'expression',
     interval = 'interval',
     listOrdered = 'listOrdered',
     listRandom = 'listRandom',
+    number = 'number',
     text = 'text'
 }
 
@@ -15,6 +17,7 @@ export class Variable extends Parent {
     }
 
     public type: VariableType = VariableType.text;
+    public expectedType: VariableType = VariableType.text;
     public precision: number = 0;
     // text
     public text: string;
@@ -33,9 +36,13 @@ export class Variable extends Parent {
         super.fromDdb(content);
 
         this.type = VariableType[super.stringFromDdb(content.type, VariableType[VariableType.text])] as VariableType;
+        this.expectedType = VariableType[super.stringFromDdb(content.expectedType, VariableType[VariableType.text])] as VariableType;
         this.precision = super.numberFromDdb(content.precision, super.stringFromDdb(content.precision, 0)); // No decimal by default
 
         switch (this.type) {
+            case VariableType.expression:
+                this.expression = super.stringFromDdb(content.expression, '');
+                break;
             case VariableType.interval:
                 this.excludes = super
                     .listFromDdb(content.excludes, [])
@@ -54,10 +61,14 @@ export class Variable extends Parent {
     public toDdb(): { [key: string]: any } {
         const out: { [key: string]: any } = super.toDdb();
 
-        out.type = super.stringToDdb(VariableType[this.type]);
+        out.type = super.stringToDdb(VariableType[this.type], VariableType[VariableType.text]);
+        out.expectedType = super.stringToDdb(VariableType[this.expectedType], VariableType[VariableType.text]);
         out.precision = super.numberToDdb(this.precision, 0);
 
         switch (this.type) {
+            case VariableType.expression:
+                out.expression = super.stringToDdb(this.expression, '');
+                break;
             case VariableType.interval:
                 const tempExcludes: Array<{ [key: string]: any }> = this.excludes.map(
                     (exclude: number | string): { [key: string]: any } =>
@@ -79,9 +90,13 @@ export class Variable extends Parent {
         super.fromHttp(content);
 
         this.type = content.type || VariableType.text;
+        this.expectedType = content.expectedType || VariableType.text;
         this.precision = content.precision || 0;
 
         switch (this.type) {
+            case VariableType.expression:
+                this.expression = content.expression || '';
+                break;
             case VariableType.interval:
                 this.excludes = content.excludes || [];
                 this.maximum = content.maximum;
@@ -99,11 +114,17 @@ export class Variable extends Parent {
         const out: { [key: string]: any } = super.toHttp();
 
         out.type = this.type;
+        if (this.expectedType !== VariableType.text) {
+            out.expectedType = this.expectedType;
+        }
         if (this.precision !== 0) {
             out.precision = this.precision;
         }
 
         switch (this.type) {
+            case VariableType.expression:
+                out.expression = this.expression;
+                break;
             case VariableType.interval:
                 if (0 < this.excludes.length) {
                     out.excludes = this.excludes;

@@ -15,7 +15,9 @@
         "registry": "http://npm.tribalnova.com"
     },
     "dependencies": {
+        "@hmh/multiple-choice": "latest",
         "@hmh/nodejs-base-server": "latest",
+        "@hmh/text-input": "latest",
         "@material/button": "latest",
         "@material/checkbox": "latest",
         "@material/form-field": "latest",
