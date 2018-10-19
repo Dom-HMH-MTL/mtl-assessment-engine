@@ -47,7 +47,7 @@ export class ProblemDao extends DynamoDbDao<Model> {
                         ]
                     })
                 );
-            case 'oneTextField':
+            case 'oneTextFieldAndMCQ':
                 return Promise.resolve(
                     new Model().fromHttp({
                         dependencies: ['@hmh/text-input', '@hmh/multiple-choice'],
@@ -56,8 +56,12 @@ export class ProblemDao extends DynamoDbDao<Model> {
                             `<p>What is the results of $V[0] times $V[1]?</p>
                             <p>
                                 <text-input id="ti">
-                                    <response-validation hidden slot="feedback" feedback-type="positive" expected="$V[2]" strategy="exactMatch"><span>Youpi</span></response-validation>
-                                    <response-validation hidden slot="feedback" feedback-type="negative"><span>Try again</span></response-validation>
+                                ${
+                                    parameters && parameters.mode === 'lesson'
+                                        ? `<response-validation hidden slot="feedback" feedback-type="positive" expected="$V[2]" strategy="exactMatch"><span>Youpi</span></response-validation>
+                                           <response-validation hidden slot="feedback" feedback-type="negative"><span>Try again</span></response-validation>`
+                                        : ''
+                                }
                                 </text-input>
                             </p>
                             <p>
@@ -66,11 +70,15 @@ export class ProblemDao extends DynamoDbDao<Model> {
                                     <span hidden slot="options" id="0">Yes</span>
                                     <span hidden slot="options" id="1">No</span>
                                     <span hidden slot="options" id="2">Maybe</span>
-                                    <response-validation hidden slot="feedback" feedback-type="positive" expected="$V[3]" strategy="exactMatch"><span>Youpi</span></response-validation>
-                                    <response-validation hidden slot="feedback" feedback-type="negative"><span>Try again</span></response-validation>
+                                    ${
+                                        parameters && parameters.mode === 'lesson'
+                                            ? `<response-validation hidden slot="feedback" feedback-type="positive" expected="$V[3]" strategy="exactMatch"><span>Youpi</span></response-validation>
+                                               <response-validation hidden slot="feedback" feedback-type="negative"><span>Try again</span></response-validation>`
+                                            : ''
+                                    }
                                 </multiple-choice-question>
                             </p>
-                            `
+                            `.replace(/\s+/g, ' ')
                         ],
                         variables: [
                             {
@@ -94,7 +102,7 @@ export class ProblemDao extends DynamoDbDao<Model> {
                             },
                             {
                                 expectedType: VariableType.number,
-                                expression: '$V[2] % 2 === 0 ? 0 : 1',
+                                expression: '$V[2] % 2 === 0 ? 1 : 0',
                                 type: VariableType.expression
                             }
                         ]
