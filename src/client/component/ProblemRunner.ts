@@ -13,6 +13,11 @@ export class ProblemRunner extends ComponentBase<any> {
         super();
     }
 
+    public ___dummy() {
+        this.showAllFeedbacks(new MouseEvent('click'));
+        this.evaluateResponses(new MouseEvent('click'));
+    }
+
     protected shouldUpdate() {
         return this.entity !== null;
     }
