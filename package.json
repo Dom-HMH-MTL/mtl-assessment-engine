@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "@hmh/multiple-choice": "latest",
-        "@hmh/nodejs-base-server": "latest",
+        "@hmh/nodejs-base-server": "^2.0.3",
         "@hmh/text-input": "latest",
         "@material/button": "latest",
         "@material/checkbox": "latest",
@@ -27,22 +27,26 @@
         "reflect-metadata": "latest"
     },
     "devDependencies": {
+        "@types/jsdom": "^12.2.0",
         "@types/node": "latest",
         "@types/node-fetch": "latest",
         "@types/sinon": "latest",
         "concurrently": "latest",
         "intern": "latest",
-        "nodemon": "latest",
+        "nodemon": "^1.18.4",
         "npm-watch": "latest",
+        "rxjs": "^6.3.3",
         "sinon": "latest",
         "source-map-support": "latest",
         "tslint": "latest",
         "typescript": "latest"
     },
     "watch": {
-        "_copyJson": "src/server/config.json"
+        "_copyJson": "src/server/config.json",
+        "map": "dist/**/*.js"
     },
     "scripts": {
+        "map": "nodejs-base-server -c dist/server/config.json -M",
         "clean": "rm -rf node_modules dist package-lock.json",
         "_shareModelDefs": "mkdir dist; mkdir dist/server; pushd ./src/client; ln -s ../server/model/ .; popd",
         "_copyJson": "cp ./src/server/config.json ./dist/server",
