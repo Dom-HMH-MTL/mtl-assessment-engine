@@ -7,7 +7,7 @@ export function addLinks(tagetUlId: string): void {
         { href: '/problem/html?mode=lesson', text: 'Basic HTML' },
         { href: '/problem/oneTextValue?mode=lesson', text: 'With one text value' },
         { href: '/problem/withIntervalValue?mode=lesson', text: 'With interval value' },
-        { href: '/problem/oneTextFieldAndMCQ?mode=lesson', text: 'With an interactive text field (lesson mode)' }
+        { href: '/problem/oneTextFieldAndMCQ?mode=lesson', text: 'With an interactive text field (lesson mode)' },
         { href: '/problem/oneTextFieldAndMCQ?mode=assessment', text: 'With an interactive text field (assessment mode)' }
     ];
     const clickListener: (event: MouseEvent) => void = (event: MouseEvent): void => {
