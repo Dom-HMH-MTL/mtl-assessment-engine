@@ -3,6 +3,7 @@
     "dev": {
         "NodeServer": {
             "applicationFileFolder": "./dist/client",
+            "importMap": "./dist/server/import-map.json",
             "cacheControlStrategy": {
                 "static": "no-cache, private",
                 "api": "no-cache, private"
@@ -29,6 +30,7 @@
     "prod": {
         "NodeServer": {
             "applicationFileFolder": "./dist/client",
+            "importMap": "./dist/server/import-map.json",
             "cacheControlStrategy": {
                 "static": "public, immutable, max-age=3000000",
                 "api": "public, immutable, max-age=5"
