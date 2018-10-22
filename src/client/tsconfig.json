@@ -7,14 +7,6 @@
         "outDir": "../../dist/client",
         "noImplicitAny": false,
         "declaration": true,
-        "paths": {
-            "@hmh/nodejs-base-server": ["node_modules/@hmh/nodejs-base-server/dist/client/index"],
-            "@hmh/*": ["node_modules/@hmh/*"],
-            "@material/*": ["node_modules/@material/*"],
-            "@polymer/lit-element": ["node_modules/@polymer/lit-element/lit-element.js"],
-            "@polymer/*": ["node_modules/@polymer/*"],
-            "lit-html/*": ["node_modules/lit-html/*"]
-        },
         "lib": ["esnext", "dom"],
         "removeComments": false
     },
