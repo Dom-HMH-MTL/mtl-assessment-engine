@@ -12,6 +12,7 @@
             "port": 8686,
             "staticContentMaxAge": 0,
             "staticFolderMapping": {
+                "/css": "../../dist/client/css",
                 "/images": "../../src/client/images"
             }
         },
@@ -39,6 +40,7 @@
             "port": 8686,
             "staticContentMaxAge": 3000000,
             "staticFolderMapping": {
+                "/css": "../../dist/client/css",
                 "/images": "../../src/client/images"
             }
         },
