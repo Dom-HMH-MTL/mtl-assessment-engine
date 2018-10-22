@@ -53,9 +53,8 @@ export class ProblemDao extends DynamoDbDao<Model> {
                         dependencies: ['@hmh/text-input', '@hmh/multiple-choice'],
                         id: '113',
                         template: [
-                            `<p>What is the results of $V[0] times $V[1]?</p>
-                            <p>
-                                <text-input id="ti">
+                            `<p>What is the results of $V[0] times $V[1]?
+                                <text-input id="ti" style="display: inline-flex;">
                                 ${
                                     parameters && parameters.mode === 'lesson'
                                         ? `<response-validation hidden slot="feedback" feedback-type="positive" expected="$V[2]" strategy="exactMatch"><span>Youpi</span></response-validation>
