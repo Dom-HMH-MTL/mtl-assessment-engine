@@ -1,0 +1,11 @@
+// Styles to inject in text-input
+@import "partials/font";
+
+.mdc-text-field__input {
+    font-family: $font-family;
+    font-size: $font-size;
+}
+
+.mdc-notched-outline__idle {
+    background-color: white;
+}
