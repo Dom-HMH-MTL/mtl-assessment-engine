@@ -1,2 +1,12 @@
-$font-family: Verdana, Geneva, Tahoma, sans-serif;
+@font-face {
+    font-family: 'HMH';
+    src: url('/fonts/avenir/80534fed-60ef-4bc2-9aa7-a8d359b5116c.eot');
+    src: url('/fonts/avenir/80534fed-60ef-4bc2-9aa7-a8d359b5116c.eot') format('eot'),
+        url('/fonts/avenir/6398ed27-3c28-4cf6-baf8-3ba3ef048cb8.woff2') format('woff2'),
+        url('/fonts/avenir/721cf818-9b94-4b4b-9260-08ae9106dea5.woff') format('woff'),
+        url('/fonts/avenir/d62f2053-27c7-44e7-a2ef-351d4554105d.ttf') format('truetype'),
+        url('/fonts/avenir/fd1996b6-3705-49fe-8dd1-e6207106a285.svg#fd1996b6-3705-49fe-8dd1-e6207106a285') format('svg');
+}
+
+$font-family: 'HMH', 'Avenir', Verdana, sans-serif;
 $font-size: 18px;
