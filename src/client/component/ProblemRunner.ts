@@ -25,7 +25,7 @@ export class ProblemRunner extends ComponentBase<any> {
     protected render(): TemplateResult {
         this.prepareDependencies();
         return html`
-        <link rel="stylesheet" href="/css/problem-runner.css">
+        <link rel="stylesheet" href="/css/theme.css">
         <style>
             #template {
                 border: 1px solid grey;
