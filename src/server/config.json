@@ -13,6 +13,7 @@
             "staticContentMaxAge": 0,
             "staticFolderMapping": {
                 "/css": "../../dist/client/css",
+                "/fonts": "../../src/client/fonts",
                 "/images": "../../src/client/images"
             }
         },
@@ -41,6 +42,7 @@
             "staticContentMaxAge": 3000000,
             "staticFolderMapping": {
                 "/css": "../../dist/client/css",
+                "/fonts": "../../src/client/fonts",
                 "/images": "../../src/client/images"
             }
         },
