@@ -1,0 +1,44 @@
+drag-drop {
+    .option-item {
+        border: 1px solid gray;
+        background-color: azure;
+        display: inline-block;
+        text-align: center;
+        height: 40px;
+        line-height: 40px;
+    }
+
+    article#drop-zone {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        section {
+            flex-basis: 30%;
+
+            drop-container {
+                height: 40px;
+                width: 100%;
+                display: inline-block;
+                background: rgba(200, 200, 200, 0.5);
+                text-align: center;
+                vertical-align: middle;
+
+                div {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    drag-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 1em;
+
+        div {
+            flex-basis: 30%;
+        }
+    }
+}

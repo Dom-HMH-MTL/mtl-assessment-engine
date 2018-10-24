@@ -1,5 +1,6 @@
 @import "partials/font";
 @import "partials/paragraphs";
+@import "partials/drag-drop";
 
 #template {
     font-family: $font-family;
@@ -10,3 +11,4 @@
 #mcq {
     --align-options: column;
 }
+

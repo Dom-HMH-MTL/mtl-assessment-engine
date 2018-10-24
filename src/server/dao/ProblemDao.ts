@@ -94,6 +94,15 @@ export class ProblemDao extends DynamoDbDao<Model> {
                         ]
                     })
                 );
+            case 'simpleDragDrop':
+                return Promise.resolve(
+                    new Model().fromHttp({
+                        dependencies: ['@hmh/drag-drop'],
+                        id: '114',
+                        template: [await fetchTemplate('simple-drag-drop')],
+                        variables: [{ type: VariableType.text, text: 'Hello' }]
+                    })
+                );
             default:
                 return Promise.resolve(new Model().fromHttp({ id: '000', template: ['Hello world!'] }));
         }

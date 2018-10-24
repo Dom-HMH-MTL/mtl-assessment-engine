@@ -15,6 +15,7 @@
         "registry": "http://npm.tribalnova.com"
     },
     "dependencies": {
+        "@hmh/drag-drop": "latest",
         "@hmh/multiple-choice": "latest",
         "@hmh/nodejs-base-server": "latest",
         "@hmh/text-input": "latest",
