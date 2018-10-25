@@ -18,6 +18,7 @@
         "@hmh/drag-drop": "latest",
         "@hmh/multiple-choice": "latest",
         "@hmh/nodejs-base-server": "latest",
+        "@hmh/plot-graph": "latest",
         "@hmh/text-input": "latest",
         "@material/button": "latest",
         "@material/checkbox": "latest",

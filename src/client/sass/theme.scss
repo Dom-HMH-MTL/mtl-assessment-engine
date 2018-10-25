@@ -1,5 +1,10 @@
 @import "partials/font";
+@import "partials/headings";
 @import "partials/paragraphs";
+
+[slot] {
+    display: none;
+}
 
 #template {
     font-family: $font-family;
@@ -10,4 +15,5 @@
 #mcq {
     --align-options: column;
 }
+
 

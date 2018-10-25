@@ -118,6 +118,36 @@ export class ProblemDao extends DynamoDbDao<Model> {
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
                 );
+            case 'dragDropSorting':
+                return Promise.resolve(
+                    new Model().fromHttp({
+                        dependencies: ['@hmh/drag-drop'],
+                        id: '115',
+                        styles: [await fetchStyles('drag-drop-sorting')],
+                        template: [await fetchTemplate('drag-drop-sorting')],
+                        variables: [{ type: VariableType.text, text: 'Hello' }]
+                    })
+                );
+            case 'dragDropDispenser':
+                return Promise.resolve(
+                    new Model().fromHttp({
+                        dependencies: ['@hmh/drag-drop'],
+                        id: '116',
+                        styles: [await fetchStyles('drag-drop-dispenser')],
+                        template: [await fetchTemplate('drag-drop-dispenser')],
+                        variables: [{ type: VariableType.text, text: 'Hello' }]
+                    })
+                );
+            case 'simpleGraph':
+                return Promise.resolve(
+                    new Model().fromHttp({
+                        dependencies: ['@hmh/text-input', '@hmh/plot-graph'],
+                        id: '117',
+                        styles: [await fetchStyles('simple-graph')],
+                        template: [await fetchTemplate('simple-graph')],
+                        variables: [{ type: VariableType.text, text: 'Hello' }]
+                    })
+                );
             default:
                 return Promise.resolve(new Model().fromHttp({ id: '000', template: ['Hello world!'] }));
         }
