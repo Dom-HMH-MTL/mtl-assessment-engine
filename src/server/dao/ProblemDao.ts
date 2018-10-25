@@ -135,7 +135,15 @@ export class ProblemDao extends DynamoDbDao<Model> {
                         id: '116',
                         styles: [await fetchStyles('drag-drop-dispenser')],
                         template: [await fetchTemplate('drag-drop-dispenser')],
-                        variables: [{ type: VariableType.text, text: 'Hello' }]
+                        variables: [
+                            {
+                                maximum: 3,
+                                minimum: 1,
+                                precision: 2,
+                                step: 0.01,
+                                type: VariableType.interval
+                            }
+                        ]
                     })
                 );
             case 'simpleGraph':
