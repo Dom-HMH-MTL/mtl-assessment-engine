@@ -1,4 +1,5 @@
 import { applyMixins, ComponentBase, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult, unsafeHTML } from '@hmh/component-base';
+import { ifDefined } from 'lit-html/directives/if-defined';
 export { ifDefined } from 'lit-html/directives/if-defined';
 import { evaluateProblemResponse } from '../app/comm';
 import { Problem as Model } from '../model/Problem';
@@ -39,6 +40,7 @@ export class ProblemRunner extends ComponentBase<any> {
             #check {
                 text-align: right;
             }
+            ${ifDefined(this.entity.styles)}
         </style>
 
         <div id="template">${unsafeHTML(this.prepareStatements().join('\n'))}</div>

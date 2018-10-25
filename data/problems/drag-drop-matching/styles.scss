@@ -24,6 +24,10 @@ drag-drop {
                 text-align: center;
                 vertical-align: middle;
 
+                &.highlight {
+                    border: 2px dashed rgba(100, 100, 100, 0.5);
+                }
+
                 div {
                     width: 100%;
                 }
@@ -36,6 +40,7 @@ drag-drop {
         flex-direction: row;
         justify-content: space-between;
         margin-top: 1em;
+        height: 40px;
 
         div {
             flex-basis: 30%;

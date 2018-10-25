@@ -9,7 +9,7 @@ export function addLinks(tagetUlId: string): void {
         { href: '/problem/withIntervalValue?mode=lesson', text: 'With interval value' },
         { href: '/problem/oneTextFieldAndMCQ?mode=lesson', text: 'With an interactive text field (lesson mode)' },
         { href: '/problem/oneTextFieldAndMCQ?mode=assessment', text: 'With an interactive text field (assessment mode)' },
-        { href: '/problem/simpleDragDrop?mode=lesson', text: 'Simple Drag and Drop (lesson mode)' }
+        { href: '/problem/dragDropMatching?mode=lesson', text: 'Drag and Drop Matching 1-to-1 (lesson mode)' }
     ];
     const clickListener: (event: MouseEvent) => void = (event: MouseEvent): void => {
         event.preventDefault();

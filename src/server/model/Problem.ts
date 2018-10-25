@@ -8,6 +8,7 @@ export class Problem extends Parent {
     }
 
     public dependencies: string[] = [];
+    public styles: string[] = [];
     public template: string[] = [];
     public variables: Variable[] = [];
 
@@ -16,6 +17,7 @@ export class Problem extends Parent {
 
         this.dependencies = super.listFromDdb(content.dependencies, []).map((statement: string): string => super.stringFromDdb(statement));
         this.template = super.listFromDdb(content.template, []).map((statement: string): string => super.stringFromDdb(statement));
+        this.styles = super.listFromDdb(content.styles, []).map((statement: string): string => super.stringFromDdb(statement));
 
         this.variables = super.listFromDdb(content.variables, []).map((variable: any): Variable => new Variable().fromDdb(super.mapFromDdb(variable)));
 
@@ -27,6 +29,7 @@ export class Problem extends Parent {
 
         out.dependencies = super.listToDdb(this.dependencies.map((dependency: string): { [key: string]: any } => super.stringToDdb(dependency)), []);
         out.template = super.listToDdb(this.template.map((statement: string): { [key: string]: any } => super.stringToDdb(statement)), []);
+        out.styles = super.listToDdb(this.styles.map((statement: string): { [key: string]: any } => super.stringToDdb(statement)), []);
 
         out.variables = super.listToDdb(this.variables.map((variable: Variable): { [key: string]: any } => ({ M: variable.toDdb() })), []);
 
@@ -38,6 +41,7 @@ export class Problem extends Parent {
 
         this.dependencies = content.dependencies || [];
         this.template = content.template;
+        this.styles = content.styles;
 
         this.variables = (content.variables || []).map((variable: any): Variable => new Variable().fromHttp(variable));
 
@@ -51,6 +55,7 @@ export class Problem extends Parent {
             out.dependencies = this.dependencies;
         }
         out.template = this.template;
+        out.styles = this.styles;
 
         if (0 < this.variables.length) {
             out.variables = this.variables.map((variable: Variable) => variable.toHttp());

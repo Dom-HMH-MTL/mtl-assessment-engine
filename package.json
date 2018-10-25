@@ -31,6 +31,7 @@
         "@types/jsdom": "^12.2.0",
         "@types/node": "latest",
         "@types/node-fetch": "latest",
+        "@types/node-sass": "^3.10.32",
         "@types/sinon": "latest",
         "concurrently": "latest",
         "intern": "latest",
