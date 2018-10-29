@@ -1,12 +1,10 @@
 import { DynamoDbDao } from '@hmh/nodejs-base-server';
 import * as fs from 'fs';
-import * as sass from 'node-sass';
 import { promisify } from 'util';
 import { Problem as Model } from '../model/Problem';
 import { VariableType } from '../model/Variable';
 
 const readFile = promisify(fs.readFile);
-const compileSass = promisify(sass.render);
 
 async function fetchTemplate(templateName: string, mode?: string): Promise<string> {
     let content: string;
@@ -16,14 +14,6 @@ async function fetchTemplate(templateName: string, mode?: string): Promise<strin
         content = await readFile(`data/problems/${templateName}/template.html`, 'utf8');
     }
     return content.replace(/\s+/g, ' ');
-}
-
-async function fetchStyles(templateName: string): Promise<string> {
-    if (fs.existsSync(`data/problems/${templateName}/styles.scss`)) {
-        const result: sass.Result = await compileSass({ file: `data/problems/${templateName}/styles.scss` });
-        return result.css.toString();
-    }
-    return '';
 }
 
 export class ProblemDao extends DynamoDbDao<Model> {
@@ -50,7 +40,6 @@ export class ProblemDao extends DynamoDbDao<Model> {
                 return Promise.resolve(
                     new Model().fromHttp({
                         id: '111',
-                        styles: [await fetchStyles('text-one-var')],
                         template: [await fetchTemplate('text-one-var')],
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
@@ -59,7 +48,6 @@ export class ProblemDao extends DynamoDbDao<Model> {
                 return Promise.resolve(
                     new Model().fromHttp({
                         id: '112',
-                        styles: [await fetchStyles('text-two-var')],
                         template: [await fetchTemplate('text-two-vars')],
                         variables: [
                             { type: VariableType.text, text: 'Raw text, no <b>HTML</b>?' },
@@ -78,7 +66,6 @@ export class ProblemDao extends DynamoDbDao<Model> {
                     new Model().fromHttp({
                         dependencies: ['@hmh/text-input', '@hmh/multiple-choice'],
                         id: '113',
-                        styles: [await fetchStyles('two-interactions')],
                         template: [await fetchTemplate('two-interactions', parameters.mode)],
                         variables: [
                             {
@@ -113,7 +100,6 @@ export class ProblemDao extends DynamoDbDao<Model> {
                     new Model().fromHttp({
                         dependencies: ['@hmh/drag-drop'],
                         id: '114',
-                        styles: [await fetchStyles('drag-drop-matching')],
                         template: [await fetchTemplate('drag-drop-matching')],
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
@@ -123,7 +109,6 @@ export class ProblemDao extends DynamoDbDao<Model> {
                     new Model().fromHttp({
                         dependencies: ['@hmh/drag-drop'],
                         id: '115',
-                        styles: [await fetchStyles('drag-drop-sorting')],
                         template: [await fetchTemplate('drag-drop-sorting')],
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
@@ -133,7 +118,6 @@ export class ProblemDao extends DynamoDbDao<Model> {
                     new Model().fromHttp({
                         dependencies: ['@hmh/drag-drop'],
                         id: '116',
-                        styles: [await fetchStyles('drag-drop-dispenser')],
                         template: [await fetchTemplate('drag-drop-dispenser')],
                         variables: [
                             {
@@ -151,7 +135,6 @@ export class ProblemDao extends DynamoDbDao<Model> {
                     new Model().fromHttp({
                         dependencies: ['@hmh/text-input', '@hmh/plot-graph'],
                         id: '117',
-                        styles: [await fetchStyles('simple-graph')],
                         template: [await fetchTemplate('simple-graph')],
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
