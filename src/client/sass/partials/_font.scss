@@ -1,2 +1,7 @@
 $font-family: 'Avenir-Primary-HMH-Math', 'Avenir', sans-serif;
 $font-size: 18px;
+
+:root {
+    --font-family: $font-family, sans-serif;
+    --font-size: $font-size;
+}
