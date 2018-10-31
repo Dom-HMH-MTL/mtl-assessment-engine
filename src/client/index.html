@@ -1,25 +1,29 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-        <title>HMH - Assessment Engine</title>
-        <meta name="description" content="HMH Assessment Catalog">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-        <link rel="icon" href="/images/hmhco.com.png">
-    </head>
-    <body>
-        <h1>Assessment Engine</h1>
+    <title>HMH - Assessment Engine</title>
+    <meta name="description" content="HMH Assessment Catalog">
 
-        <ul id="hooks"></ul>
+    <link rel="icon" href="/images/hmhco.com.png">
+    <link rel="stylesheet" href="/css/fonts.css">
+</head>
 
-        <div id="showcase"></div>
+<body>
+    <h1>Assessment Engine</h1>
 
-        <script type="module">
-            import { addLinks, setupRouter } from '/app/index.js';
+    <ul id="hooks"></ul>
 
-            addLinks('hooks');
-            setupRouter('showcase');
-        </script>
-    </body>
+    <div id="showcase"></div>
+
+    <script type="module">
+        import { addLinks, setupRouter } from '/app/index.js';
+
+        addLinks('hooks');
+        setupRouter('showcase');
+    </script>
+</body>
+
 </html>

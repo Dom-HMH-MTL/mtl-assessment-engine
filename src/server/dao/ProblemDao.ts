@@ -1,6 +1,20 @@
 import { DynamoDbDao } from '@hmh/nodejs-base-server';
+import * as fs from 'fs';
+import { promisify } from 'util';
 import { Problem as Model } from '../model/Problem';
 import { VariableType } from '../model/Variable';
+
+const readFile = promisify(fs.readFile);
+
+async function fetchTemplate(templateName: string, mode?: string): Promise<string> {
+    let content: string;
+    if (mode === 'lesson') {
+        content = await readFile(`data/problems/${templateName}/template-lesson.html`, 'utf8');
+    } else {
+        content = await readFile(`data/problems/${templateName}/template.html`, 'utf8');
+    }
+    return content.replace(/\s+/g, ' ');
+}
 
 export class ProblemDao extends DynamoDbDao<Model> {
     // Factory method
@@ -21,12 +35,12 @@ export class ProblemDao extends DynamoDbDao<Model> {
     public async get(id: string, parameters?: { [key: string]: string }): Promise<Model> {
         switch (id) {
             case 'html':
-                return Promise.resolve(new Model().fromHttp({ id: '110', template: ['<h1>Hello world!</h1><p>Welcome to the Problem runner!</p>'] }));
+                return Promise.resolve(new Model().fromHttp({ id: '110', template: [await fetchTemplate('html-only')] }));
             case 'oneTextValue':
                 return Promise.resolve(
                     new Model().fromHttp({
                         id: '111',
-                        template: ['This is the value: $V[0]'],
+                        template: [await fetchTemplate('text-one-var')],
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
                 );
@@ -34,7 +48,7 @@ export class ProblemDao extends DynamoDbDao<Model> {
                 return Promise.resolve(
                     new Model().fromHttp({
                         id: '112',
-                        template: ['This is a `text` value: $V[0], followed with a randomly picked number within an interval: $V[1]'],
+                        template: [await fetchTemplate('text-two-vars')],
                         variables: [
                             { type: VariableType.text, text: 'Raw text, no <b>HTML</b>?' },
                             {
@@ -52,34 +66,7 @@ export class ProblemDao extends DynamoDbDao<Model> {
                     new Model().fromHttp({
                         dependencies: ['@hmh/text-input', '@hmh/multiple-choice'],
                         id: '113',
-                        template: [
-                            `<p>What is the results of $V[0] times $V[1]?</p>
-                            <p>
-                                <text-input id="ti">
-                                ${
-                                    parameters && parameters.mode === 'lesson'
-                                        ? `<response-validation hidden slot="feedback" feedback-type="positive" expected="$V[2]" strategy="exactMatch"><span>Youpi</span></response-validation>
-                                           <response-validation hidden slot="feedback" feedback-type="negative"><span>Try again</span></response-validation>`
-                                        : ''
-                                }
-                                </text-input>
-                            </p>
-                            <p>
-                                Is the response an odd number?
-                                <multiple-choice-question id="mcq" style="display: inline-flex;">
-                                    <span hidden slot="options" id="0">Yes</span>
-                                    <span hidden slot="options" id="1">No</span>
-                                    <span hidden slot="options" id="2">Maybe</span>
-                                    ${
-                                        parameters && parameters.mode === 'lesson'
-                                            ? `<response-validation hidden slot="feedback" feedback-type="positive" expected="$V[3]" strategy="exactMatch"><span>Youpi</span></response-validation>
-                                               <response-validation hidden slot="feedback" feedback-type="negative"><span>Try again</span></response-validation>`
-                                            : ''
-                                    }
-                                </multiple-choice-question>
-                            </p>
-                            `.replace(/\s+/g, ' ')
-                        ],
+                        template: [await fetchTemplate('two-interactions', parameters.mode)],
                         variables: [
                             {
                                 maximum: 9,
@@ -106,6 +93,50 @@ export class ProblemDao extends DynamoDbDao<Model> {
                                 type: VariableType.expression
                             }
                         ]
+                    })
+                );
+            case 'dragDropMatching':
+                return Promise.resolve(
+                    new Model().fromHttp({
+                        dependencies: ['@hmh/drag-drop'],
+                        id: '114',
+                        template: [await fetchTemplate('drag-drop-matching')],
+                        variables: [{ type: VariableType.text, text: 'Hello' }]
+                    })
+                );
+            case 'dragDropSorting':
+                return Promise.resolve(
+                    new Model().fromHttp({
+                        dependencies: ['@hmh/drag-drop'],
+                        id: '115',
+                        template: [await fetchTemplate('drag-drop-sorting')],
+                        variables: [{ type: VariableType.text, text: 'Hello' }]
+                    })
+                );
+            case 'dragDropDispenser':
+                return Promise.resolve(
+                    new Model().fromHttp({
+                        dependencies: ['@hmh/drag-drop'],
+                        id: '116',
+                        template: [await fetchTemplate('drag-drop-dispenser')],
+                        variables: [
+                            {
+                                maximum: 3,
+                                minimum: 1,
+                                precision: 2,
+                                step: 0.01,
+                                type: VariableType.interval
+                            }
+                        ]
+                    })
+                );
+            case 'simpleGraph':
+                return Promise.resolve(
+                    new Model().fromHttp({
+                        dependencies: ['@hmh/text-input', '@hmh/plot-graph'],
+                        id: '117',
+                        template: [await fetchTemplate('simple-graph')],
+                        variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
                 );
             default:

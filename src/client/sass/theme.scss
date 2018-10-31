@@ -1,0 +1,142 @@
+@import "partials/colors";
+@import "partials/font";
+@import "partials/headings";
+@import "partials/paragraphs";
+
+#template {
+    font-family: $font-family;
+    font-size: $font-size;
+}
+
+text-input {
+    --input-background: white;
+}
+
+#mcq {
+    --align-options: column;
+}
+
+drag-drop {
+    &#matching {
+        .option-item {
+            border: 1px solid gray;
+            background-color: azure;
+            display: inline-block;
+            text-align: center;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        article#drop-zone {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            section {
+                flex-basis: 30%;
+
+                drop-container {
+                    height: 40px;
+                    width: 100%;
+                    display: inline-block;
+                    background: rgba(200, 200, 200, 0.5);
+                    text-align: center;
+                    vertical-align: middle;
+
+                    &.highlight {
+                        border: 2px dashed rgba(100, 100, 100, 0.5);
+                    }
+
+                    div {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+
+        drag-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-top: 1em;
+            height: 40px;
+
+            div {
+                flex-basis: 30%;
+            }
+        }
+    }
+
+    &#dispenser {
+        .option-item {
+            display: block;
+            width: 4rem;
+            background: transparent;
+
+            img {
+                width: 3rem;
+            }
+        }
+
+        drop-container {
+            height: 20rem;
+            width: 100%;
+            display: inline-block;
+            background: rgba(50, 50, 50, 0.8);
+            text-align: center;
+            vertical-align: middle;
+            border-radius: 1rem;
+
+            div {
+                width: 100%;
+            }
+        }
+
+        drag-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            height: 4rem;
+        }
+    }
+
+    &#sorting {
+        $option-height: 10rem;
+
+        sortable-drop-container {
+            display: flex;
+            flex-direction: column;
+
+            div[slot=options] {
+                display: initial;
+                margin: 0.5rem 0;
+                background-color: rgb(233, 229, 108);
+                border-radius: 0.5em;
+
+                figure {
+                    display: flex;
+                    flex-direction: row-reverse;
+                    justify-content: space-around;
+
+                    & > div {
+                        flex-basis: 50%;
+                        text-align: right;
+                        height: $option-height;
+
+                        img {
+                            height: 100%;
+                            width: auto;
+                        }
+                    }
+
+                    & > figcaption {
+                        font-size: 1.5rem;
+                        flex-basis: 50%;
+                        text-align: left;
+                        line-height: $option-height;
+                    }
+                }
+            }
+        }
+    }
+}
