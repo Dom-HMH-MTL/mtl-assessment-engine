@@ -3,6 +3,7 @@
     "dev": {
         "NodeServer": {
             "applicationFileFolder": "./dist/client",
+            "importMap": "./dist/server/import-map.json",
             "cacheControlStrategy": {
                 "static": "no-cache, private",
                 "api": "no-cache, private"
@@ -11,6 +12,8 @@
             "port": 8686,
             "staticContentMaxAge": 0,
             "staticFolderMapping": {
+                "/css": "../../dist/client/css",
+                "/fonts": "../../src/client/fonts",
                 "/images": "../../src/client/images"
             }
         },
@@ -29,6 +32,7 @@
     "prod": {
         "NodeServer": {
             "applicationFileFolder": "./dist/client",
+            "importMap": "./dist/server/import-map.json",
             "cacheControlStrategy": {
                 "static": "public, immutable, max-age=3000000",
                 "api": "public, immutable, max-age=5"
@@ -37,6 +41,8 @@
             "port": 8686,
             "staticContentMaxAge": 3000000,
             "staticFolderMapping": {
+                "/css": "../../dist/client/css",
+                "/fonts": "../../src/client/fonts",
                 "/images": "../../src/client/images"
             }
         },

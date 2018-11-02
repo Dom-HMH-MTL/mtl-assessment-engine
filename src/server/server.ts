@@ -1,5 +1,4 @@
-import { BaseServer as Parent } from '@hmh/nodejs-base-server';
-import { BaseResource } from '@hmh/nodejs-base-server';
+import { BaseResource, BaseServer as Parent } from '@hmh/nodejs-base-server';
 
 import * as appConfig from './config.json';
 import * as appResources from './resource/index'; // List of all concrete BaseResource classes implementions

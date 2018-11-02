@@ -1,0 +1,17 @@
+<p>What is the results of $V[0] times $V[1]?
+    <text-input id="ti" style="display: inline-flex;">
+        <response-validation hidden slot="feedback" feedback-type="positive" expected="$V[2]" strategy="exactMatch"><span>Youpi</span></response-validation>
+        <response-validation hidden slot="feedback" feedback-type="negative"><span>Try again</span></response-validation>
+    </text-input>
+</p>
+<p>
+    Is the response an even number?
+    <multiple-choice-question id="mcq" style="display: inline-flex;">
+        <span hidden slot="options" id="0">Yes</span>
+        <span hidden slot="options" id="1">No</span>
+        <span hidden slot="options" id="2">Maybe</span>
+
+        <response-validation hidden slot="feedback" feedback-type="positive" expected="$V[3]" strategy="exactMatch"><span>Youpi</span></response-validation>
+        <response-validation hidden slot="feedback" feedback-type="negative"><span>Try again</span></response-validation>
+    </multiple-choice-question>
+</p>

@@ -1,5 +1,16 @@
 import { Variable, VariableType } from './Variable';
 
+export function injectVariables(source: string, variables: Variable[], imposedLimit: number = Infinity): string {
+    return variables.reduce(
+        (accumulator: string, element: Variable, idx: number, elements: Variable[]): string =>
+            idx < imposedLimit && -1 < accumulator.indexOf(`$V[${idx}]`)
+                ? accumulator.replace(`$V[${idx}]`, prepareValue(idx, element, elements))
+                : accumulator,
+        source
+    );
+}
+
+// `export`-ed for test purposes only
 export const prepareValue = (index: number, variable: Variable, variables: Variable[]): any => {
     if (!variable.cachedValue) {
         let preparation: any;
@@ -10,31 +21,31 @@ export const prepareValue = (index: number, variable: Variable, variables: Varia
             case VariableType.interval:
                 preparation = pickAValue(prepareInterval(index, variable, variables));
                 break;
+            case VariableType.expression:
+                preparation = evaluateExpression(index, variable, variables);
+                break;
         }
         variable.cachedValue = preparation;
     }
     return variable.cachedValue;
 };
 
-export function injectVariables(source: string, variables: Variable[], lastVariableIdx?: number): number | string {
-    for (let idx = 0, limit = lastVariableIdx || variables.length; idx < limit; idx += 1) {
-        source = source.replace(`$V[${idx}]`, prepareValue(idx, variables[idx], variables));
-    }
-    const conversion: number = Number(source);
-    return isNaN(conversion) ? source : conversion;
-}
-
 function pickAValue(distribution: any[]): any {
     return distribution[Math.floor(Math.random() * distribution.length)];
 }
 
-const prepareInterval = (index: number, variable: Variable, variables: Variable[]): number[] => {
-    const min: number = typeof variable.minimum === 'string' ? (injectVariables(variable.minimum, variables, index) as number) : variable.minimum;
-    const max: number = typeof variable.maximum === 'string' ? (injectVariables(variable.maximum, variables, index) as number) : variable.maximum;
-    const step: number = typeof variable.step === 'string' ? (injectVariables(variable.step, variables, index) as number) : variable.step;
-    const excludes: number[] = (variable.excludes || []).map(
-        (exclude: number | string): number => (typeof exclude === 'string' ? (injectVariables(exclude, variables, index) as number) : exclude)
-    );
+function resolveNumber(source: number | string, index: number, variables: Variable[]): number {
+    if (typeof source === 'string') {
+        return Number(injectVariables(source, variables, index));
+    }
+    return source;
+}
+
+function prepareInterval(index: number, variable: Variable, variables: Variable[]): number[] {
+    const min: number = resolveNumber(variable.minimum, index, variables);
+    const max: number = resolveNumber(variable.maximum, index, variables);
+    const step: number = resolveNumber(variable.step, index, variables);
+    const excludes: number[] = (variable.excludes || []).map((exclude: any): number => resolveNumber(exclude, index, variables));
 
     const candidates: number[] = [];
     const noDecimal: boolean = variable.precision === 0;
@@ -53,4 +64,16 @@ const prepareInterval = (index: number, variable: Variable, variables: Variable[
         distributed.push(candidates.splice(Math.floor(Math.random() * candidates.length), 1)[0]);
     }
     return distributed;
-};
+}
+
+function evaluateExpression(index: number, variable: Variable, variables: Variable[]): number | string {
+    try {
+        // tslint:disable-next-line: no-eval
+        return eval(injectVariables(variable.expression, variables, index));
+    } catch (ex) {
+        // tslint:disable-next-line: no-console
+        console.log('Expression evaluation of', variable, 'failed with:\n', ex);
+        return `Incorrect expression V[${index}]`;
+    }
+    // return 15;
+}

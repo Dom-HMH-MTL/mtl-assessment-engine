@@ -7,12 +7,14 @@ export class Problem extends Parent {
         return new Problem();
     }
 
+    public dependencies: string[] = [];
     public template: string[] = [];
     public variables: Variable[] = [];
 
     public fromDdb(content: { [key: string]: any }): Problem {
         super.fromDdb(content);
 
+        this.dependencies = super.listFromDdb(content.dependencies, []).map((statement: string): string => super.stringFromDdb(statement));
         this.template = super.listFromDdb(content.template, []).map((statement: string): string => super.stringFromDdb(statement));
 
         this.variables = super.listFromDdb(content.variables, []).map((variable: any): Variable => new Variable().fromDdb(super.mapFromDdb(variable)));
@@ -23,11 +25,10 @@ export class Problem extends Parent {
     public toDdb(): { [key: string]: any } {
         const out: { [key: string]: any } = super.toDdb();
 
-        const tempTepmlate: Array<{ [key: string]: any }> = this.template.map((statement: string): { [key: string]: any } => super.stringToDdb(statement));
-        out.template = super.listToDdb(tempTepmlate, []);
+        out.dependencies = super.listToDdb(this.dependencies.map((dependency: string): { [key: string]: any } => super.stringToDdb(dependency)), []);
+        out.template = super.listToDdb(this.template.map((statement: string): { [key: string]: any } => super.stringToDdb(statement)), []);
 
-        const tempVariables: Array<{ [key: string]: any }> = this.variables.map((variable: Variable): { [key: string]: any } => ({ M: variable.toDdb() }));
-        out.variables = super.listToDdb(tempVariables, []);
+        out.variables = super.listToDdb(this.variables.map((variable: Variable): { [key: string]: any } => ({ M: variable.toDdb() })), []);
 
         return out;
     }
@@ -35,6 +36,7 @@ export class Problem extends Parent {
     public fromHttp(content: { [key: string]: any }): Problem {
         super.fromHttp(content);
 
+        this.dependencies = content.dependencies || [];
         this.template = content.template;
 
         this.variables = (content.variables || []).map((variable: any): Variable => new Variable().fromHttp(variable));
@@ -45,6 +47,9 @@ export class Problem extends Parent {
     public toHttp(): { [key: string]: any } {
         const out: { [key: string]: any } = super.toHttp();
 
+        if (0 < this.dependencies.length) {
+            out.dependencies = this.dependencies;
+        }
         out.template = this.template;
 
         if (0 < this.variables.length) {

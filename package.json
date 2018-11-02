@@ -15,20 +15,28 @@
         "registry": "http://npm.tribalnova.com"
     },
     "dependencies": {
+        "@hmh/drag-drop": "latest",
+        "@hmh/multiple-choice": "latest",
         "@hmh/nodejs-base-server": "latest",
+        "@hmh/plot-graph": "latest",
+        "@hmh/text-input": "latest",
         "@material/button": "latest",
         "@material/checkbox": "latest",
         "@material/form-field": "latest",
         "@polymer/lit-element": "latest",
+        "jsdom": "latest",
         "node-fetch": "latest",
         "reflect-metadata": "latest"
     },
     "devDependencies": {
+        "@types/jsdom": "latest",
         "@types/node": "latest",
         "@types/node-fetch": "latest",
+        "@types/node-sass": "latest",
         "@types/sinon": "latest",
         "concurrently": "latest",
         "intern": "latest",
+        "node-sass": "^4.9.4",
         "nodemon": "latest",
         "npm-watch": "latest",
         "sinon": "latest",
@@ -37,17 +45,20 @@
         "typescript": "latest"
     },
     "watch": {
-        "_copyJson": "src/server/config.json"
+        "_copyJson": "src/server/config.json",
+        "map": "dist/**/*.js"
     },
     "scripts": {
+        "map": "nodejs-base-server -c dist/server/config.json -M",
         "clean": "rm -rf node_modules dist package-lock.json",
         "_shareModelDefs": "mkdir dist; mkdir dist/server; pushd ./src/client; ln -s ../server/model/ .; popd",
         "_copyJson": "cp ./src/server/config.json ./dist/server",
         "_firstCompilation": "tsc -p ./src/server; tsc -p ./src/client; tsc -p ./src/server-unit; tsc -p ./src/client-unit",
-        "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation",
-        "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm-watch'",
+        "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation; npm run sass",
+        "watch": "npm run init; concurrently --names 'server,client,s-unit, json , sass ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan,yellow.bgBlack' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run sass -- -w' 'npm-watch'",
         "dev": "nodemon -r source-map-support/register dist/server/server.js --watch ./dist/server",
         "debug": "nodemon --inspect -r source-map-support/register dist/server/server.js --watch ./dist/server",
+        "sass": "node-sass src/client/sass -r -o dist/client/css",
         "start": "node dist/server/server.js",
         "test": "intern config=src/server-unit/intern.json",
         "test-polymer": "polymer test -l chrome -p",

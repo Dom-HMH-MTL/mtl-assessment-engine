@@ -47,7 +47,7 @@ suite(
                     const result: TestModel = source.fromDdb(content) as TestModel;
                     assert.strictEqual(result, source);
                     assert.deepEqual(result.template, ['aaa']);
-                    assert.deepEqual(result.variables, [Object.assign(new Variable(), { type: 'text', text: 'ttt', precision: 0 })]);
+                    assert.deepEqual(result.variables, [Object.assign(new Variable(), { authorId: undefined, type: 'text', text: 'ttt', precision: 0 })]);
                     assert.strictEqual(result.additional, 999);
                 });
             }
