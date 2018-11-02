@@ -15,7 +15,7 @@ export class ProblemRunner extends ComponentBase<any> {
     public async load() {
         this.entity = await loadProblem(this.src);
         await this.prepareDependencies();
-        this.innerHTML = this.prepareStatements().join('');
+        this.innerHTML = `<div id="template">${this.prepareStatements().join('')}</div>`;
     }
 
     protected render(): TemplateResult {
@@ -116,7 +116,7 @@ export class ProblemRunner extends ComponentBase<any> {
             });
             return accumulator;
         };
-        const collectedFeedbacks: FeedbackMessage[] = collectFeedbacks((this as any).shadowRoot.getElementById('template'), []);
+        const collectedFeedbacks: FeedbackMessage[] = collectFeedbacks(this.querySelector('#template'), []);
         const allPositives: boolean = collectedFeedbacks.reduce(
             (accumulator: boolean, message: FeedbackMessage): boolean => accumulator && message.type === FeedbackType.POSITIVE,
             true
@@ -146,7 +146,7 @@ export class ProblemRunner extends ComponentBase<any> {
             });
             return accumulator;
         };
-        const collectedValues: { [id: string]: any } = collectValues((this as any).shadowRoot.getElementById('template'), {});
+        const collectedValues: { [id: string]: any } = collectValues(this.querySelector('#template'), {});
         const problemResponse = Object.assign(new ProblemResponse(), {
             problemId: this.entity.id,
             values: collectedValues,
