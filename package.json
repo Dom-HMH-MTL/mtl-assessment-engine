@@ -36,7 +36,7 @@
         "@types/sinon": "latest",
         "concurrently": "latest",
         "intern": "latest",
-        "node-sass": "^4.9.4",
+        "node-sass": "latest",
         "nodemon": "latest",
         "npm-watch": "latest",
         "sinon": "latest",
