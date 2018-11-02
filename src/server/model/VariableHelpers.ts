@@ -3,7 +3,9 @@ import { Variable, VariableType } from './Variable';
 export function injectVariables(source: string, variables: Variable[], imposedLimit: number = Infinity): string {
     return variables.reduce(
         (accumulator: string, element: Variable, idx: number, elements: Variable[]): string =>
-            idx < imposedLimit ? accumulator.replace(`$V[${idx}]`, prepareValue(idx, element, elements)) : accumulator,
+            idx < imposedLimit && -1 < accumulator.indexOf(`$V[${idx}]`)
+                ? accumulator.replace(`$V[${idx}]`, prepareValue(idx, element, elements))
+                : accumulator,
         source
     );
 }

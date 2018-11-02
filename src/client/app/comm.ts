@@ -13,8 +13,8 @@ export async function loadProblem(id: string): Promise<Problem> {
 
 export async function evaluateProblemResponse(model: ProblemResponse): Promise<string> {
     return fetch('/api/v1/ang-eng/ProblemResponse', {
-        body: JSON.stringify(model),
-        headers: { accept: 'application/json', 'x-hmh-userId': '12345-678-90' },
+        body: JSON.stringify(model.toHttp()),
+        headers: { accept: 'application/json', 'content-type': 'application/json', 'x-hmh-userId': '12345-678-90' },
         method: 'POST'
     }).then(
         (response: Response): string => {

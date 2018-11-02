@@ -88,15 +88,29 @@ suite(
             (): void => {
                 test('with minimal output', (): void => {
                     const result: { [key: string]: any } = source.toDdb();
-                    assert.deepEqual(result, { type: { S: 'text' }, precision: undefined, text: undefined });
+                    assert.deepEqual(result, {
+                        authorId: undefined,
+                        expectedType: undefined,
+                        precision: undefined,
+                        text: undefined,
+                        type: undefined
+                    });
                 });
                 test('with `text` output', (): void => {
                     source.text = 'this is some text';
                     const result: { [key: string]: any } = source.toDdb();
-                    assert.deepEqual(result, { type: { S: 'text' }, precision: undefined, text: { S: 'this is some text' } });
+                    assert.deepEqual(result, {
+                        authorId: undefined,
+                        expectedType: undefined,
+                        precision: undefined,
+                        text: { S: 'this is some text' },
+                        type: undefined
+                    });
                 });
                 test('with `interval` &  numbers', (): void => {
+                    source.authorId = '12345';
                     source.type = VariableType.interval;
+                    source.expectedType = VariableType.number;
                     source.minimum = 3.14;
                     source.maximum = 6.28;
                     source.precision = 2;
@@ -104,6 +118,7 @@ suite(
                     source.excludes = [2];
                     const result: { [key: string]: any } = source.toDdb();
                     assert.deepEqual(result, {
+                        authorId: { S: '12345' },
                         excludes: {
                             L: [
                                 {
@@ -111,6 +126,7 @@ suite(
                                 }
                             ]
                         },
+                        expectedType: { S: 'number' },
                         maximum: { N: '6.28' },
                         minimum: { N: '3.14' },
                         precision: { N: '2' },
@@ -127,6 +143,7 @@ suite(
                     source.excludes = ['$V[4]'];
                     const result: { [key: string]: any } = source.toDdb();
                     assert.deepEqual(result, {
+                        authorId: undefined,
                         excludes: {
                             L: [
                                 {
@@ -134,6 +151,7 @@ suite(
                                 }
                             ]
                         },
+                        expectedType: undefined,
                         maximum: { S: '$V[1]' },
                         minimum: { S: '$V[0]' },
                         precision: undefined,
@@ -222,13 +240,14 @@ suite(
             (): void => {
                 test('with minimal output', (): void => {
                     const result: { [key: string]: any } = source.toHttp();
-                    assert.deepEqual(result, { id: undefined, type: 'text', text: undefined });
+                    assert.deepEqual(result, { authorId: undefined, id: undefined, type: 'text', text: undefined });
                 });
                 test('with `text` output', (): void => {
+                    source.authorId = '000';
                     source.id = '111';
                     source.text = 'this is some text';
                     const result: { [key: string]: any } = source.toHttp();
-                    assert.deepEqual(result, { id: '111', type: 'text', text: 'this is some text' });
+                    assert.deepEqual(result, { authorId: '000', id: '111', type: 'text', text: 'this is some text' });
                 });
                 test('with partial `interval` paylod', (): void => {
                     source.id = '111';
@@ -239,6 +258,7 @@ suite(
                     source.excludes = [];
                     const result: { [key: string]: any } = source.toHttp();
                     assert.deepEqual(result, {
+                        authorId: undefined,
                         id: '111',
                         maximum: '$V[1]',
                         minimum: 3.14,
@@ -255,6 +275,7 @@ suite(
                     source.excludes = [2];
                     const result: { [key: string]: any } = source.toHttp();
                     assert.deepEqual(result, {
+                        authorId: undefined,
                         excludes: [2],
                         id: '111',
                         maximum: '$V[1]',
