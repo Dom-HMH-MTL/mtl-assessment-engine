@@ -1,31 +1,23 @@
-import { applyMixins, ComponentBase, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult, unsafeHTML } from '@hmh/component-base';
-export { ifDefined } from 'lit-html/directives/if-defined';
-import { evaluateProblemResponse } from '../app/comm';
+import { applyMixins, ComponentBase, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult } from '@hmh/component-base';
+import { evaluateProblemResponse, loadProblem } from '../app/comm';
 import { Problem as Model } from '../model/Problem';
 import { prepareStatements } from '../model/ProblemHelpers';
 import { ProblemResponse } from '../model/ProblemResponse';
 
 export class ProblemRunner extends ComponentBase<any> {
-    @property({ type: Object })
-    public entity: Model = null;
+    @property({ type: String, reflect: true })
+    public src: string;
 
-    constructor() {
-        super();
-    }
+    private entity: Model = null;
 
-    public ___dummy() {
-        this.showAllFeedbacks(new MouseEvent('click'));
-        this.evaluateResponses(new MouseEvent('click'));
-    }
-
-    protected shouldUpdate() {
-        return this.entity !== null;
+    public async load() {
+        this.entity = await loadProblem(this.src);
+        await this.prepareDependencies();
+        this.innerHTML = this.prepareStatements().join('');
     }
 
     protected render(): TemplateResult {
-        this.prepareDependencies();
         return html`
-        <link rel="stylesheet" href="/css/theme.css">
         <style>
             #template {
                 border: 1px solid grey;
@@ -41,7 +33,7 @@ export class ProblemRunner extends ComponentBase<any> {
             }
         </style>
 
-        <div id="template">${unsafeHTML(this.prepareStatements().join('\n'))}</div>
+        <slot></slot>
         <div id="controls">
             <div id="feedback"></div>
             <button id="check" @click="${this.check.bind(this)}">Check</button>
@@ -52,11 +44,11 @@ export class ProblemRunner extends ComponentBase<any> {
     private async check(event: MouseEvent): Promise<void> {
         // this.showAllFeedbacks(event);
         this.provideOwnFeedback(event);
-        // this.evaluateResponses(event).then(
-        //     (id: string): void => {
-        //         (this as any).shadowRoot.getElementById('feedback').innerText = 'Response saved successfully';
-        //     }
-        // );
+        /* this.evaluateResponses(event).then(
+            (id: string): void => {
+                (this as any).shadowRoot.getElementById('feedback').innerText = 'Response saved successfully';
+            }
+        );*/
     }
 
     private async prepareDependencies(): Promise<void> {
@@ -75,7 +67,7 @@ export class ProblemRunner extends ComponentBase<any> {
     }
 
     private showAllFeedbacks(event: MouseEvent): void {
-        const templadeDiv: HTMLElement = (this as any).shadowRoot.getElementById('template');
+        const templadeDiv: HTMLElement = this;
         const showFeedbacks = (node: Node): void => {
             if (node instanceof ComponentBase) {
                 node.showFeedback();
@@ -89,7 +81,7 @@ export class ProblemRunner extends ComponentBase<any> {
     }
 
     private provideOwnFeedback(event: MouseEvent): void {
-        const templadeDiv: HTMLElement = (this as any).shadowRoot.getElementById('template');
+        const templadeDiv: HTMLElement = this;
         const collectFeedbacks = (node: Node, accumulator: FeedbackMessage[]): FeedbackMessage[] => {
             if (node instanceof ComponentBase) {
                 accumulator.push(node.getFeedback());
@@ -116,7 +108,6 @@ export class ProblemRunner extends ComponentBase<any> {
     }
 
     private async evaluateResponses(event: MouseEvent): Promise<string> {
-        const templadeDiv: HTMLElement = (this as any).shadowRoot.getElementById('template');
         const collectValues = (node: Node, accumulator: any[]): any[] => {
             if (node instanceof ComponentBase) {
                 accumulator.push(node.getValue());
@@ -127,7 +118,7 @@ export class ProblemRunner extends ComponentBase<any> {
             }
             return accumulator;
         };
-        const collectedValues: any[] = collectValues(templadeDiv, []);
+        const collectedValues: any[] = collectValues(this, []);
         const problemResponse = Object.assign(new ProblemResponse(), { problemId: this.entity.id, variables: this.entity.variables, values: collectedValues });
         return evaluateProblemResponse(problemResponse);
     }

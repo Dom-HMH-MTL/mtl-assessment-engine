@@ -55,7 +55,8 @@ async function dispatchRoute(event: PopStateEvent): Promise<void> {
     if ('/problem/'.length < route.length && route.startsWith('/problem/')) {
         const problemId: string = route.substring('/problem/'.length);
         const component: Component = new Component();
-        component.entity = await loadProblem(problemId);
+        component.src = problemId;
+        component.load();
         showcaseDiv.innerHTML = '';
         showcaseDiv.appendChild(component as any);
         return;
