@@ -29,10 +29,10 @@
         "reflect-metadata": "latest"
     },
     "devDependencies": {
-        "@types/jsdom": "^12.2.0",
+        "@types/jsdom": "latest",
         "@types/node": "latest",
         "@types/node-fetch": "latest",
-        "@types/node-sass": "^3.10.32",
+        "@types/node-sass": "latest",
         "@types/sinon": "latest",
         "concurrently": "latest",
         "intern": "latest",

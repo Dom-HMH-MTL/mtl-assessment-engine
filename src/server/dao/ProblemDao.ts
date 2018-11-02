@@ -1,19 +1,22 @@
-import { DynamoDbDao } from '@hmh/nodejs-base-server';
 import * as fs from 'fs';
-import { promisify } from 'util';
+
+import { DynamoDbDao } from '@hmh/nodejs-base-server';
 import { Problem as Model } from '../model/Problem';
 import { VariableType } from '../model/Variable';
 
-const readFile = promisify(fs.readFile);
+function fetchTemplate(templateName: string, mode?: string): string[] {
+    // Template of step 0
+    const templates: string[] = [];
+    templates.push(fs.readFileSync(`data/problems/${templateName}/template.html`, 'utf8'));
 
-async function fetchTemplate(templateName: string, mode?: string): Promise<string> {
-    let content: string;
-    if (mode === 'lesson') {
-        content = await readFile(`data/problems/${templateName}/template-lesson.html`, 'utf8');
-    } else {
-        content = await readFile(`data/problems/${templateName}/template.html`, 'utf8');
+    // Additional templates for the following steps, if any
+    let templateIndex: number = 1;
+    while (fs.existsSync(`data/problems/${templateName}/template-${templateIndex}.html`)) {
+        templates.push(fs.readFileSync(`data/problems/${templateName}/template-${templateIndex}.html`, 'utf8'));
+        templateIndex += 1;
     }
-    return content.replace(/\s+/g, ' ');
+
+    return templates;
 }
 
 export class ProblemDao extends DynamoDbDao<Model> {
@@ -35,20 +38,20 @@ export class ProblemDao extends DynamoDbDao<Model> {
     public async get(id: string, parameters?: { [key: string]: string }): Promise<Model> {
         switch (id) {
             case 'html':
-                return Promise.resolve(new Model().fromHttp({ id: '110', template: [await fetchTemplate('html-only')] }));
+                return Promise.resolve(new Model().fromHttp({ id, template: fetchTemplate('html-only') }));
             case 'oneTextValue':
                 return Promise.resolve(
                     new Model().fromHttp({
-                        id: '111',
-                        template: [await fetchTemplate('text-one-var')],
+                        id,
+                        template: fetchTemplate('text-one-var'),
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
                 );
             case 'withIntervalValue':
                 return Promise.resolve(
                     new Model().fromHttp({
-                        id: '112',
-                        template: [await fetchTemplate('text-two-vars')],
+                        id,
+                        template: fetchTemplate('text-two-vars'),
                         variables: [
                             { type: VariableType.text, text: 'Raw text, no <b>HTML</b>?' },
                             {
@@ -65,8 +68,8 @@ export class ProblemDao extends DynamoDbDao<Model> {
                 return Promise.resolve(
                     new Model().fromHttp({
                         dependencies: ['@hmh/text-input', '@hmh/multiple-choice'],
-                        id: '113',
-                        template: [await fetchTemplate('two-interactions', parameters.mode)],
+                        id,
+                        template: fetchTemplate('two-interactions'),
                         variables: [
                             {
                                 maximum: 9,
@@ -89,7 +92,7 @@ export class ProblemDao extends DynamoDbDao<Model> {
                             },
                             {
                                 expectedType: VariableType.number,
-                                expression: '$V[2] % 2 === 0 ? 1 : 0',
+                                expression: '$V[2] % 2 === 0 ? 0 : 1',
                                 type: VariableType.expression
                             }
                         ]
@@ -99,8 +102,8 @@ export class ProblemDao extends DynamoDbDao<Model> {
                 return Promise.resolve(
                     new Model().fromHttp({
                         dependencies: ['@hmh/drag-drop'],
-                        id: '114',
-                        template: [await fetchTemplate('drag-drop-matching')],
+                        id,
+                        template: fetchTemplate('drag-drop-matching'),
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
                 );
@@ -108,8 +111,8 @@ export class ProblemDao extends DynamoDbDao<Model> {
                 return Promise.resolve(
                     new Model().fromHttp({
                         dependencies: ['@hmh/drag-drop'],
-                        id: '115',
-                        template: [await fetchTemplate('drag-drop-sorting')],
+                        id,
+                        template: fetchTemplate('drag-drop-sorting'),
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
                 );
@@ -117,8 +120,8 @@ export class ProblemDao extends DynamoDbDao<Model> {
                 return Promise.resolve(
                     new Model().fromHttp({
                         dependencies: ['@hmh/drag-drop'],
-                        id: '116',
-                        template: [await fetchTemplate('drag-drop-dispenser')],
+                        id,
+                        template: fetchTemplate('drag-drop-dispenser'),
                         variables: [
                             {
                                 maximum: 3,
@@ -134,13 +137,13 @@ export class ProblemDao extends DynamoDbDao<Model> {
                 return Promise.resolve(
                     new Model().fromHttp({
                         dependencies: ['@hmh/text-input', '@hmh/plot-graph'],
-                        id: '117',
-                        template: [await fetchTemplate('simple-graph')],
+                        id,
+                        template: fetchTemplate('simple-graph'),
                         variables: [{ type: VariableType.text, text: 'Hello' }]
                     })
                 );
             default:
-                return Promise.resolve(new Model().fromHttp({ id: '000', template: ['Hello world!'] }));
+                return Promise.resolve(new Model().fromHttp({ id, template: ['Hello world!'] }));
         }
     }
 }

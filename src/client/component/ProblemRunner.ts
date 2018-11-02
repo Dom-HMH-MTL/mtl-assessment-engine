@@ -7,6 +7,8 @@ import { ProblemResponse } from '../model/ProblemResponse';
 export class ProblemRunner extends ComponentBase<any> {
     @property({ type: String, reflect: true })
     public src: string;
+    @property({ type: Boolean, reflect: true, attribute: 'lesson-mode' })
+    public lessonMode: boolean = false;
 
     private entity: Model = null;
 
@@ -31,6 +33,15 @@ export class ProblemRunner extends ComponentBase<any> {
             #check {
                 text-align: right;
             }
+            #feedback {
+                color: black;
+            }
+            #feedback.positive {
+                color: green;
+            }
+            #feedback.negative {
+                color: red;
+            }
         </style>
 
         <slot></slot>
@@ -42,13 +53,25 @@ export class ProblemRunner extends ComponentBase<any> {
     }
 
     private async check(event: MouseEvent): Promise<void> {
-        // this.showAllFeedbacks(event);
-        this.provideOwnFeedback(event);
-        /* this.evaluateResponses(event).then(
+        if (this.lessonMode) {
+            this.showAllFeedbacks(event);
+            const { text, className } = this.provideOwnFeedback(event);
+            this.displayFeedback(text, className);
+        }
+        // Always send the problem responses to the back-end service
+        this.evaluateResponses(event).then(
             (id: string): void => {
-                (this as any).shadowRoot.getElementById('feedback').innerText = 'Response saved successfully';
+                if (!this.lessonMode) {
+                    this.displayFeedback('Response saved successfully', '');
+                }
             }
-        );*/
+        );
+    }
+
+    private displayFeedback(text: string, className: string) {
+        const feedbackDiv: HTMLElement = (this as any).shadowRoot.getElementById('feedback');
+        feedbackDiv.innerText = text;
+        feedbackDiv.className = className;
     }
 
     private async prepareDependencies(): Promise<void> {
@@ -67,59 +90,68 @@ export class ProblemRunner extends ComponentBase<any> {
     }
 
     private showAllFeedbacks(event: MouseEvent): void {
-        const templadeDiv: HTMLElement = this;
         const showFeedbacks = (node: Node): void => {
-            if (node instanceof ComponentBase) {
-                node.showFeedback();
-            } else {
-                node.childNodes.forEach((child: Node) => {
-                    showFeedbacks(child);
-                });
+            // Stop condition
+            if (node instanceof ComponentBase || typeof (node as ComponentBase<any>).showFeedback === 'function') {
+                return (node as ComponentBase<any>).showFeedback();
             }
+            // Recursive loop (if any `chlid`)
+            node.childNodes.forEach((child: Node) => {
+                showFeedbacks(child);
+            });
         };
-        showFeedbacks(templadeDiv);
+        showFeedbacks((this as any).shadowRoot.getElementById('template'));
     }
 
-    private provideOwnFeedback(event: MouseEvent): void {
-        const templadeDiv: HTMLElement = this;
+    private provideOwnFeedback(event: MouseEvent): { text: string; className: string } {
         const collectFeedbacks = (node: Node, accumulator: FeedbackMessage[]): FeedbackMessage[] => {
-            if (node instanceof ComponentBase) {
-                accumulator.push(node.getFeedback());
-            } else {
-                node.childNodes.forEach((child: Node) => {
-                    collectFeedbacks(child, accumulator);
-                });
+            // Stop condition
+            if (node instanceof ComponentBase || typeof (node as ComponentBase<any>).getFeedback === 'function') {
+                accumulator.push((node as ComponentBase<any>).getFeedback());
+                return accumulator;
             }
+            // Recursive loop (if any `chlid`)
+            node.childNodes.forEach((child: Node) => {
+                collectFeedbacks(child, accumulator);
+            });
             return accumulator;
         };
-        const collectedFeedbacks: FeedbackMessage[] = collectFeedbacks(templadeDiv, []);
-        const feedbackDiv: HTMLElement = (this as any).shadowRoot.getElementById('feedback');
+        const collectedFeedbacks: FeedbackMessage[] = collectFeedbacks((this as any).shadowRoot.getElementById('template'), []);
         const allPositives: boolean = collectedFeedbacks.reduce(
             (accumulator: boolean, message: FeedbackMessage): boolean => accumulator && message.type === FeedbackType.POSITIVE,
             true
         );
         if (allPositives) {
-            feedbackDiv.innerText = 'Everything is OK, ready to move to the next exercize';
-            feedbackDiv.className = 'positive';
-        } else {
-            feedbackDiv.innerText = 'Something is wrong. Please check your answers...';
-            feedbackDiv.className = 'negitive';
+            return {
+                className: 'positive',
+                text: 'Everything is OK, ready to move to the next exercize'
+            };
         }
+        return {
+            className: 'negative',
+            text: 'Something is wrong. Please check your answers...'
+        };
     }
 
     private async evaluateResponses(event: MouseEvent): Promise<string> {
-        const collectValues = (node: Node, accumulator: any[]): any[] => {
-            if (node instanceof ComponentBase) {
-                accumulator.push(node.getValue());
-            } else {
-                node.childNodes.forEach((child: Node) => {
-                    collectValues(child, accumulator);
-                });
+        const collectValues = (node: Node, accumulator: { [id: string]: any }): { [id: string]: any } => {
+            // Stop condition
+            if (node instanceof ComponentBase || typeof (node as ComponentBase<any>).getValue === 'function') {
+                accumulator[(node as Element).id] = (node as ComponentBase<any>).getValue();
+                return accumulator;
             }
+            // Recursive loop (if any `chlid`)
+            node.childNodes.forEach((child: Node) => {
+                collectValues(child, accumulator);
+            });
             return accumulator;
         };
-        const collectedValues: any[] = collectValues(this, []);
-        const problemResponse = Object.assign(new ProblemResponse(), { problemId: this.entity.id, variables: this.entity.variables, values: collectedValues });
+        const collectedValues: { [id: string]: any } = collectValues((this as any).shadowRoot.getElementById('template'), {});
+        const problemResponse = Object.assign(new ProblemResponse(), {
+            problemId: this.entity.id,
+            values: collectedValues,
+            variables: this.entity.variables
+        });
         return evaluateProblemResponse(problemResponse);
     }
 }

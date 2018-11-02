@@ -1,5 +1,6 @@
 import { BaseService } from '@hmh/nodejs-base-server';
 import { ProblemDao as DAO } from '../dao/ProblemDao';
+import { Problem as Model } from '../model/Problem';
 
 export class ProblemService extends BaseService<DAO> {
     public static getInstance(): ProblemService {
@@ -14,4 +15,20 @@ export class ProblemService extends BaseService<DAO> {
     private constructor() {
         super(DAO.getInstance());
     }
+
+    public async get(id: string, parameters: { [key: string]: string } = {}): Promise<Model> {
+        return super.get(id, parameters).then((entity: Model): Model => filterOut(entity, parameters));
+    }
+}
+
+const TOO_MUCH_SPACES_REGEXP: RegExp = /\s+/g;
+const RESPONSE_VALIDATION_TAGS_REGEXP: RegExp = /<response-validation.*?<\/response-validation>/g;
+
+function filterOut(entity: Model, parameters: { [key: string]: string } = {}): Model {
+    if (parameters.mode !== 'lesson') {
+        entity.template = entity.template.map((template: string): string => template.replace(RESPONSE_VALIDATION_TAGS_REGEXP, ''));
+    }
+    entity.template = entity.template.map((template: string): string => template.replace(TOO_MUCH_SPACES_REGEXP, ' '));
+
+    return entity;
 }

@@ -1,5 +1,4 @@
 import { ProblemRunner as Component } from '../component/ProblemRunner';
-import { loadProblem } from './comm';
 
 export function addLinks(tagetUlId: string): void {
     const links: Array<{ href: string; text: string }> = [
@@ -8,11 +7,11 @@ export function addLinks(tagetUlId: string): void {
         { href: '/problem/oneTextValue?mode=lesson', text: 'With one text value' },
         { href: '/problem/withIntervalValue?mode=lesson', text: 'With interval value' },
         { href: '/problem/oneTextFieldAndMCQ?mode=lesson', text: 'With an interactive text field (lesson mode)' },
-        { href: '/problem/oneTextFieldAndMCQ?mode=assessment', text: 'With an interactive text field (assessment mode)' },
-        { href: '/problem/dragDropMatching?mode=lesson', text: 'Drag and Drop Matching 1-to-1 (lesson mode)' },
-        { href: '/problem/dragDropSorting?mode=lesson', text: 'Drag and Drop Sorting (lesson mode)' },
-        { href: '/problem/dragDropDispenser?mode=lesson', text: 'Drag and Drop Dispenser (lesson mode)' },
-        { href: '/problem/simpleGraph?mode=lesson', text: 'Simple 2D graph (lesson mode)' }
+        { href: '/problem/oneTextFieldAndMCQ', text: 'With an interactive text field (assessment mode)' },
+        { href: '/problem/dragDropMatching?mode=lesson', text: 'Drag and Drop Matching 1-to-1' },
+        { href: '/problem/dragDropSorting?mode=lesson', text: 'Drag and Drop Sorting' },
+        { href: '/problem/dragDropDispenser?mode=lesson', text: 'Drag and Drop Dispenser' },
+        { href: '/problem/simpleGraph?mode=lesson', text: 'Simple 2D graph' }
     ];
     const clickListener: (event: MouseEvent) => void = (event: MouseEvent): void => {
         event.preventDefault();

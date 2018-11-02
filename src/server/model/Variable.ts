@@ -35,8 +35,8 @@ export class Variable extends Parent {
     public fromDdb(content: { [key: string]: any }): Variable {
         super.fromDdb(content);
 
-        this.type = VariableType[super.stringFromDdb(content.type, VariableType[VariableType.text])] as VariableType;
-        this.expectedType = VariableType[super.stringFromDdb(content.expectedType, VariableType[VariableType.text])] as VariableType;
+        this.type = super.stringFromDdb(content.type, VariableType.text) as VariableType;
+        this.expectedType = super.stringFromDdb(content.expectedType, VariableType.text) as VariableType;
         this.precision = super.numberFromDdb(content.precision, super.stringFromDdb(content.precision, 0)); // No decimal by default
 
         switch (this.type) {
@@ -55,14 +55,18 @@ export class Variable extends Parent {
                 this.text = super.stringFromDdb(content.text, '');
         }
 
+        if (content.cachedValue !== undefined) {
+            this.cachedValue = content.cachedValue;
+        }
+
         return this;
     }
 
     public toDdb(): { [key: string]: any } {
         const out: { [key: string]: any } = super.toDdb();
 
-        out.type = super.stringToDdb(VariableType[this.type], VariableType[VariableType.text]);
-        out.expectedType = super.stringToDdb(VariableType[this.expectedType], VariableType[VariableType.text]);
+        out.type = super.stringToDdb(this.type, VariableType.text);
+        out.expectedType = super.stringToDdb(this.expectedType, VariableType.text);
         out.precision = super.numberToDdb(this.precision, 0);
 
         switch (this.type) {
@@ -81,6 +85,10 @@ export class Variable extends Parent {
                 break;
             default:
                 out.text = super.stringToDdb(this.text, '');
+        }
+
+        if (this.cachedValue !== undefined) {
+            out.cachedValue = this.cachedValue;
         }
 
         return out;
@@ -105,6 +113,10 @@ export class Variable extends Parent {
                 break;
             default:
                 this.text = content.text || '';
+        }
+
+        if (content.cachedValue !== undefined) {
+            this.cachedValue = content.cachedValue;
         }
 
         return this;
@@ -137,6 +149,10 @@ export class Variable extends Parent {
                 break;
             default:
                 out.text = this.text;
+        }
+
+        if (this.cachedValue !== undefined) {
+            out.cachedValue = this.cachedValue;
         }
 
         return out;
