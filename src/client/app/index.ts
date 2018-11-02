@@ -55,6 +55,7 @@ async function dispatchRoute(event: PopStateEvent): Promise<void> {
         const problemId: string = route.substring('/problem/'.length);
         const component: Component = new Component();
         component.src = problemId;
+        component.lessonMode = problemId.includes('mode=lesson');
         component.load();
         showcaseDiv.innerHTML = '';
         showcaseDiv.appendChild(component as any);

@@ -15,7 +15,7 @@ export class ProblemRunner extends ComponentBase<any> {
     public async load() {
         this.entity = await loadProblem(this.src);
         await this.prepareDependencies();
-        this.innerHTML = `<div id="template">${this.prepareStatements().join('')}</div>`;
+        this.innerHTML = `<div id="template">${this.prepareStatements().join('\n')}</div>`;
     }
 
     protected render(): TemplateResult {
@@ -100,7 +100,7 @@ export class ProblemRunner extends ComponentBase<any> {
                 showFeedbacks(child);
             });
         };
-        showFeedbacks((this as any).shadowRoot.getElementById('template'));
+        showFeedbacks(this.querySelector('#template'));
     }
 
     private provideOwnFeedback(event: MouseEvent): { text: string; className: string } {
