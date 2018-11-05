@@ -1,21 +1,22 @@
 import { applyMixins, ComponentBase, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult } from '@hmh/component-base';
+import { ContentComponent, LoadingState } from '@hmh/content-components';
 import { evaluateProblemResponse, loadProblem } from '../app/comm';
 import { Problem as Model } from '../model/Problem';
 import { prepareStatements } from '../model/ProblemHelpers';
 import { ProblemResponse } from '../model/ProblemResponse';
 
-export class ProblemRunner extends ComponentBase<any> {
-    @property({ type: String, reflect: true })
-    public src: string;
+export class ProblemRunner extends ContentComponent implements Feedback {
     @property({ type: Boolean, reflect: true, attribute: 'lesson-mode' })
     public lessonMode: boolean = false;
 
     private entity: Model = null;
 
     public async load() {
+        this.state = LoadingState.loading;
         this.entity = await loadProblem(this.src);
         await this.prepareDependencies();
         this.innerHTML = `<div id="template">${this.prepareStatements().join('\n')}</div>`;
+        this.src = '';
     }
 
     protected render(): TemplateResult {
@@ -44,7 +45,7 @@ export class ProblemRunner extends ComponentBase<any> {
             }
         </style>
 
-        <slot></slot>
+        <slot @slotchange="${(event: Event) => this.onSlotChanged(event)}"></slot>
         <div id="controls">
             <div id="feedback"></div>
             <button id="check" @click="${this.check.bind(this)}">Check</button>

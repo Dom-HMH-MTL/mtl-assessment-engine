@@ -56,9 +56,15 @@ async function dispatchRoute(event: PopStateEvent): Promise<void> {
         const component: Component = new Component();
         component.src = problemId;
         component.lessonMode = problemId.includes('mode=lesson');
-        component.load();
+        component.hidden = true;
         showcaseDiv.innerHTML = '';
         showcaseDiv.appendChild(component as any);
+
+        setTimeout(() => {
+            // Remove the hidden attribute
+            document.querySelector('hmh-assess-problem').removeAttribute('hidden');
+        }, 250);
+
         return;
     }
     // if ('/assessment'.length ...) {
