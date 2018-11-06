@@ -6,3 +6,4 @@ build
 coverage
 dist
 src/client/model
+src/server/model/validation-strategy.ts

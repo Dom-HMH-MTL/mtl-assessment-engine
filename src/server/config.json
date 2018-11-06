@@ -10,6 +10,10 @@
             },
             "defaultClientContentPath": "../../src/client/index.html",
             "port": 8686,
+            "requestMetadata": {
+                "headers": ["X-Sort", "X-Ids-Only", "X-HMH-User-Id"],
+                "cookies": []
+            },
             "staticContentMaxAge": 0,
             "staticFolderMapping": {
                 "/css": "../../dist/client/css",
@@ -39,6 +43,10 @@
             },
             "defaultClientContentPath": "../../src/client/index.html",
             "port": 8686,
+            "requestMetadata": {
+                "headers": ["X-Sort", "X-Ids-Only", "X-HMH-User-Id"],
+                "cookies": []
+            },
             "staticContentMaxAge": 3000000,
             "staticFolderMapping": {
                 "/css": "../../dist/client/css",

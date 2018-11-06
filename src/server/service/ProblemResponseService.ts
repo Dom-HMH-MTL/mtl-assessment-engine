@@ -1,13 +1,12 @@
-import { BaseService } from '@hmh/nodejs-base-server';
 import { ProblemDao as AssociatedDAO } from '../dao/ProblemDao';
 import { ProblemResponseDao as DAO } from '../dao/ProblemResponseDao';
 import { Problem } from '../model/Problem';
 import { ProblemResponse as Model } from '../model/ProblemResponse';
-import { FeedbackType, ResponseValidation, Strategy } from '../model/ResponseValidation';
-import { matchers } from './ResponseValidationStrategy';
+import { FeedbackType, matchers, ResponseValidation, Strategy } from '../model/ResponseValidation';
+import { injectVariables } from '../model/VariableHelpers';
+import { BaseService } from './BaseService';
 
 import { JSDOM } from 'jsdom';
-import { injectVariables } from '../model/VariableHelpers';
 
 export class ProblemResponseService extends BaseService<DAO> {
     public static getInstance(): ProblemResponseService {
@@ -26,7 +25,7 @@ export class ProblemResponseService extends BaseService<DAO> {
     }
 
     /* istanbul ignore next */
-    public async create(candidate: Model): Promise<string> {
+    public async create(candidate: Model, metadata?: { [key: string]: string }): Promise<string> {
         const problem: Problem = await this.associatedDao.get(candidate.problemId);
         const template: DocumentFragment = JSDOM.fragment(injectVariables(problem.template[0], candidate.variables));
         // FIXME: Address all problem steps, not just the first one...
@@ -66,8 +65,8 @@ export class ProblemResponseService extends BaseService<DAO> {
         candidate.evaluations = evaluations;
         candidate.feedbackType = feedbackType;
         candidate.score = feedbackType === FeedbackType.NEGATIVE ? negativeScore : totalScore;
-        // return super.create(candidate);
 
+        // return super.create(candidate, metadata);
         return '111-' + problem.id; // FIXME: temporary shortcut while information about the author (a request header) is conveyed out by the base server logic...
     }
 
