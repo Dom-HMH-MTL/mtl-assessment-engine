@@ -1,28 +1,26 @@
-import { applyMixins, ComponentBase, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult, unsafeHTML } from '@hmh/component-base';
-export { ifDefined } from 'lit-html/directives/if-defined';
-import { evaluateProblemResponse } from '../app/comm';
+import { applyMixins, ComponentBase, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult } from '@hmh/component-base';
+import { ContentComponent, LoadingState } from '@hmh/content-components';
+import { evaluateProblemResponse, loadProblem } from '../app/comm';
 import { Problem as Model } from '../model/Problem';
 import { prepareStatements } from '../model/ProblemHelpers';
 import { ProblemResponse } from '../model/ProblemResponse';
 
-export class ProblemRunner extends ComponentBase<any> {
-    @property({ type: Object })
-    public entity: Model = null;
-    @property({ type: Boolean })
+export class ProblemRunner extends ContentComponent implements Feedback {
+    @property({ type: Boolean, reflect: true, attribute: 'lesson-mode' })
     public lessonMode: boolean = false;
 
-    constructor() {
-        super();
-    }
+    private entity: Model = null;
 
-    protected shouldUpdate() {
-        return this.entity !== null;
+    public async load() {
+        this.state = LoadingState.loading;
+        this.entity = await loadProblem(this.src);
+        await this.prepareDependencies();
+        this.innerHTML = `<div id="template">${this.prepareStatements().join('\n')}</div>`;
+        this.src = '';
     }
 
     protected render(): TemplateResult {
-        this.prepareDependencies();
         return html`
-        <link rel="stylesheet" href="/css/theme.css">
         <style>
             #template {
                 border: 1px solid grey;
@@ -47,7 +45,7 @@ export class ProblemRunner extends ComponentBase<any> {
             }
         </style>
 
-        <div id="template">${unsafeHTML(this.prepareStatements().join('\n'))}</div>
+        <slot @slotchange="${(event: Event) => this.onSlotChanged(event)}"></slot>
         <div id="controls">
             <div id="feedback"></div>
             <button id="check" @click="${this.check.bind(this)}">Check</button>
@@ -103,7 +101,7 @@ export class ProblemRunner extends ComponentBase<any> {
                 showFeedbacks(child);
             });
         };
-        showFeedbacks((this as any).shadowRoot.getElementById('template'));
+        showFeedbacks(this.querySelector('#template'));
     }
 
     private provideOwnFeedback(event: MouseEvent): { text: string; className: string } {
@@ -119,7 +117,7 @@ export class ProblemRunner extends ComponentBase<any> {
             });
             return accumulator;
         };
-        const collectedFeedbacks: FeedbackMessage[] = collectFeedbacks((this as any).shadowRoot.getElementById('template'), []);
+        const collectedFeedbacks: FeedbackMessage[] = collectFeedbacks(this.querySelector('#template'), []);
         const allPositives: boolean = collectedFeedbacks.reduce(
             (accumulator: boolean, message: FeedbackMessage): boolean => accumulator && message.type === FeedbackType.POSITIVE,
             true
@@ -143,13 +141,13 @@ export class ProblemRunner extends ComponentBase<any> {
                 accumulator[(node as Element).id] = (node as ComponentBase<any>).getValue();
                 return accumulator;
             }
-            // Recursive loop (if any `chlid`)
+            // Recursive loop (if any `chlid`)å
             node.childNodes.forEach((child: Node) => {
                 collectValues(child, accumulator);
             });
             return accumulator;
         };
-        const collectedValues: { [id: string]: any } = collectValues((this as any).shadowRoot.getElementById('template'), {});
+        const collectedValues: { [id: string]: any } = collectValues(this.querySelector('#template'), {});
         const problemResponse = Object.assign(new ProblemResponse(), {
             problemId: this.entity.id,
             values: collectedValues,

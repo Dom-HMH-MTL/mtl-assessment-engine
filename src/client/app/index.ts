@@ -1,5 +1,4 @@
 import { ProblemRunner as Component } from '../component/ProblemRunner';
-import { loadProblem } from './comm';
 
 export function addLinks(tagetUlId: string): void {
     const links: Array<{ href: string; text: string }> = [
@@ -46,7 +45,7 @@ export function setupRouter(targetDivId: string): void {
 
 async function dispatchRoute(event: PopStateEvent): Promise<void> {
     const showcaseDiv = document.getElementById('showcase');
-    const currenLocation: URL = new URL(event.state.location);
+    const currenLocation: URL = newåå URL(event.state.location);
     const route: string = currenLocation.pathname + currenLocation.search;
     if (route === '/') {
         showcaseDiv.innerHTML = '';
@@ -55,10 +54,17 @@ async function dispatchRoute(event: PopStateEvent): Promise<void> {
     if ('/problem/'.length < route.length && route.startsWith('/problem/')) {
         const problemId: string = route.substring('/problem/'.length);
         const component: Component = new Component();
-        component.entity = await loadProblem(problemId);
-        component.lessonMode = -1 < problemId.indexOf('mode=lesson');
+        component.src = problemId;
+        component.lessonMode = problemId.includes('mode=lesson');
+        component.hidden = true;
         showcaseDiv.innerHTML = '';
         showcaseDiv.appendChild(component as any);
+
+        setTimeout(() => {
+            // Remove the hidden attribute
+            document.querySelector('hmh-assess-problem').removeAttribute('hidden');
+        }, 250);
+
         return;
     }
     // if ('/assessment'.length ...) {
