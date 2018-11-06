@@ -1,5 +1,4 @@
-import { applyMixins, ComponentBase, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult } from '@hmh/component-base';
-import { ContentComponent, LoadingState } from '@hmh/content-components';
+import { applyMixins, ComponentBase, ContentComponent, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult } from '@hmh/component-base';
 import { evaluateProblemResponse, loadProblem } from '../app/comm';
 import { Problem as Model } from '../model/Problem';
 import { prepareStatements } from '../model/ProblemHelpers';
@@ -11,12 +10,10 @@ export class ProblemRunner extends ContentComponent implements Feedback {
 
     private entity: Model = null;
 
-    public async load() {
-        this.state = LoadingState.loading;
+    public async fetchContent(): Promise<string> {
         this.entity = await loadProblem(this.src);
         await this.prepareDependencies();
-        this.innerHTML = `<div id="template">${this.prepareStatements().join('\n')}</div>`;
-        this.src = '';
+        return `<div id="template">${this.prepareStatements().join('\n')}</div>`;
     }
 
     protected render(): TemplateResult {

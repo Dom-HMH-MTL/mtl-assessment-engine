@@ -45,7 +45,7 @@ export function setupRouter(targetDivId: string): void {
 
 async function dispatchRoute(event: PopStateEvent): Promise<void> {
     const showcaseDiv = document.getElementById('showcase');
-    const currenLocation: URL = newåå URL(event.state.location);
+    const currenLocation: URL = new URL(event.state.location);
     const route: string = currenLocation.pathname + currenLocation.search;
     if (route === '/') {
         showcaseDiv.innerHTML = '';
