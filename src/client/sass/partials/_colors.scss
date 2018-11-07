@@ -2,8 +2,8 @@ $negative-color: #D90719;
 $neutral-color: #D4AB27;
 $positive-color: #46AB3B;
 
-:root {
-    --negative-color: $negative-color;
-    --neutral-color: $neutral-color;
-    --positive-color: $positive-color;
+* {
+    --negative-color: #{$negative-color};
+    --neutral-color: #{$neutral-color};
+    --positive-color: #{$positive-color};
 }

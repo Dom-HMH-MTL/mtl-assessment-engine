@@ -15,6 +15,7 @@
         "registry": "http://npm.tribalnova.com"
     },
     "dependencies": {
+        "@hmh/content-components": "latest",
         "@hmh/drag-drop": "latest",
         "@hmh/multiple-choice": "latest",
         "@hmh/nodejs-base-server": "latest",
@@ -36,7 +37,7 @@
         "@types/sinon": "latest",
         "concurrently": "latest",
         "intern": "latest",
-        "node-sass": "^4.9.4",
+        "node-sass": "latest",
         "nodemon": "latest",
         "npm-watch": "latest",
         "sinon": "latest",
