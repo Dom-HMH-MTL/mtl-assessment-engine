@@ -57,7 +57,7 @@
         "_generateImportMap": "nodejs-base-server -c dist/server/config.json -M",
         "_firstCompilation": "tsc -p ./src/server; tsc -p ./src/client; tsc -p ./src/server-unit; tsc -p ./src/client-unit",
         "_sass": "node-sass src/client/sass -r -o dist/client/css",
-        "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation; npm run sass",
+        "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation; npm run _generateImportMap; npm run _sass",
         "watch": "npm run init; concurrently --names 'server,client,s-unit, json , sass ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan,yellow.bgBlack' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run _sass -- -w' 'npm-watch'",
         "dev": "nodemon -r source-map-support/register dist/server/server.js --watch ./dist/server",
         "debug": "nodemon --inspect -r source-map-support/register dist/server/server.js --watch ./dist/server",
