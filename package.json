@@ -47,19 +47,20 @@
     },
     "watch": {
         "_copyJson": "src/server/config.json",
-        "map": "dist/**/*.js"
+        "_generateImportMap": "dist/client/**/*.js"
     },
     "scripts": {
-        "map": "nodejs-base-server -c dist/server/config.json -M",
         "clean": "rm -rf node_modules dist package-lock.json",
         "_shareModelDefs": "mkdir dist; mkdir dist/server; pushd ./src/client; ln -s ../server/model/ .; popd",
+        "_linkComponentBaseDependency": "pushd src/server/model; ln -s ../../../node_modules/@hmh/component-base/src/mixins/validation-strategy.ts .; popd",
         "_copyJson": "cp ./src/server/config.json ./dist/server",
+        "_generateImportMap": "nodejs-base-server -c dist/server/config.json -M",
         "_firstCompilation": "tsc -p ./src/server; tsc -p ./src/client; tsc -p ./src/server-unit; tsc -p ./src/client-unit",
+        "_sass": "node-sass src/client/sass -r -o dist/client/css",
         "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation; npm run sass",
-        "watch": "npm run init; concurrently --names 'server,client,s-unit, json , sass ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan,yellow.bgBlack' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run sass -- -w' 'npm-watch'",
+        "watch": "npm run init; concurrently --names 'server,client,s-unit, json , sass ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan,yellow.bgBlack' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run _sass -- -w' 'npm-watch'",
         "dev": "nodemon -r source-map-support/register dist/server/server.js --watch ./dist/server",
         "debug": "nodemon --inspect -r source-map-support/register dist/server/server.js --watch ./dist/server",
-        "sass": "node-sass src/client/sass -r -o dist/client/css",
         "start": "node dist/server/server.js",
         "test": "intern config=src/server-unit/intern.json",
         "test-polymer": "polymer test -l chrome -p",
