@@ -1,6 +1,6 @@
-import { BaseService } from '@hmh/nodejs-base-server';
 import { ProblemDao as DAO } from '../dao/ProblemDao';
 import { Problem as Model } from '../model/Problem';
+import { BaseService } from './BaseService';
 
 export class ProblemService extends BaseService<DAO> {
     public static getInstance(): ProblemService {
@@ -16,8 +16,8 @@ export class ProblemService extends BaseService<DAO> {
         super(DAO.getInstance());
     }
 
-    public async get(id: string, parameters: { [key: string]: string } = {}): Promise<Model> {
-        return super.get(id, parameters).then((entity: Model): Model => filterOut(entity, parameters));
+    public async get(id: string, parameters: { [key: string]: string } = {}, metadata: { [key: string]: string }): Promise<Model> {
+        return super.get(id, parameters, metadata).then((entity: Model): Model => filterOut(entity, parameters));
     }
 }
 

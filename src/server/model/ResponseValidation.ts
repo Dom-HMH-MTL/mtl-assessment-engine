@@ -1,19 +1,7 @@
+import { FeedbackType, Strategy } from './validation-strategy';
+export { FeedbackType, matchers, Strategy } from './validation-strategy';
+
 import { BaseModel } from './BaseModel';
-
-export enum Strategy {
-    ANY = 'any',
-    CONTAINS = 'contains',
-    EXACT_MATCH = 'exactMatch',
-    EXACT_ORDER = 'exactOrder',
-    FUZZY_MATCH = 'fuzzyMatch',
-    MATH_EQUIVALENT = 'mathEquivalent'
-}
-
-export enum FeedbackType {
-    POSITIVE = 'positive',
-    NEGATIVE = 'negative',
-    NEUTRAL = 'neutral'
-}
 
 export class ResponseValidation extends BaseModel {
     // Factory method
