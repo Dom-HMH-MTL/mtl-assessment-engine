@@ -25,7 +25,6 @@
         "@material/form-field": "latest",
         "@polymer/lit-element": "latest",
         "jsdom": "latest",
-        "node-fetch": "latest",
         "reflect-metadata": "latest"
     },
     "devDependencies": {
@@ -38,6 +37,7 @@
         "intern": "latest",
         "node-sass": "^4.9.4",
         "nodemon": "latest",
+        "node-fetch": "latest",
         "npm-watch": "latest",
         "sinon": "latest",
         "source-map-support": "latest",

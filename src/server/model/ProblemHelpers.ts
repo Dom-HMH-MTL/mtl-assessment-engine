@@ -1,9 +1,14 @@
+import { Content } from './Content';
 import { Problem } from './Problem';
 import { injectVariables } from './VariableHelpers';
 
 export const prepareStatements = (problem: Problem): string[] => {
     if (!problem.cachedStatemnents) {
-        problem.cachedStatemnents = problem.template.map((statement: string): string => cleanHTML(injectVariables(statement, problem.variables)));
+        if (!Array.isArray(problem.templates)) {
+            throw new Error('Template data has not been loaded!');
+        }
+        // FIXME: do not only process 'en' language
+        problem.cachedStatemnents = problem.templates.map((content: Content): string => cleanHTML(injectVariables(content.text.en, problem.variables)));
     }
     return problem.cachedStatemnents;
 };

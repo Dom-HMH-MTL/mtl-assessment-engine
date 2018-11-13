@@ -1,17 +1,25 @@
+import { BaseModel } from '../model/BaseModel';
+import { Content } from '../model/Content';
 import { Problem } from '../model/Problem';
 import { ProblemResponse } from '../model/ProblemResponse';
+
+export const CONTENT_CLASS: Content = new Content().constructor as any;
+export const PROBLEM_CLASS: Problem = new Problem().constructor as any;
 
 function getUserId(): string {
     const inputField: HTMLElement = document.getElementById('hmhUserId');
     return (inputField as HTMLInputElement).value || '12345';
 }
 
-export async function loadProblem(id: string): Promise<Problem> {
-    return fetch('/api/v1/ang-eng/Problem/' + id, { headers: { accept: 'application/json', 'X-HMH-User-Id': getUserId() }, method: 'GET' })
+export async function loadEntity(id: string, modelClass: BaseModel): Promise<BaseModel> {
+    return fetch('/api/v1/ang-eng/' + modelClass.name + '/' + id, {
+        headers: { accept: 'application/json', 'X-HMH-User-Id': getUserId() },
+        method: 'GET'
+    })
         .then((response: Response): any => response.json())
         .then(
             (model: any): Problem => {
-                return new Problem().fromHttp(model);
+                return modelClass.getInstance().fromHttp(model);
             }
         );
 }

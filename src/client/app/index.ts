@@ -1,18 +1,26 @@
 import { ProblemRunner as Component } from '../component/ProblemRunner';
-import { loadProblem } from './comm';
+import { Content } from '../model/Content';
+import { Problem } from '../model/Problem';
+import { CONTENT_CLASS, loadEntity, PROBLEM_CLASS } from './comm';
+
+function prepareURL(problemId: string): string {
+    return '/problem/' + encodeURI(problemId).replace(/\//g, '%2f');
+}
 
 export function addLinks(tagetUlId: string): void {
     const links: Array<{ href: string; text: string }> = [
-        { href: '/problem/text?mode=lesson', text: 'Just text' },
-        { href: '/problem/html?mode=lesson', text: 'Basic HTML' },
-        { href: '/problem/oneTextValue?mode=lesson', text: 'With one text value' },
-        { href: '/problem/withIntervalValue?mode=lesson', text: 'With interval value' },
-        { href: '/problem/oneTextFieldAndMCQ?mode=lesson', text: 'With an interactive text field (lesson mode)' },
-        { href: '/problem/oneTextFieldAndMCQ', text: 'With an interactive text field (assessment mode)' },
-        { href: '/problem/dragDropMatching?mode=lesson', text: 'Drag and Drop Matching 1-to-1' },
-        { href: '/problem/dragDropSorting?mode=lesson', text: 'Drag and Drop Sorting' },
-        { href: '/problem/dragDropDispenser?mode=lesson', text: 'Drag and Drop Dispenser' },
-        { href: '/problem/simpleGraph?mode=lesson', text: 'Simple 2D graph' }
+        {
+            href: prepareURL('with interval & expression variables, with text-input & mcq interactions') + '?mode=lesson',
+            text: 'With an interactive text field (lesson mode)'
+        },
+        {
+            href: prepareURL('with interval & expression variables, with text-input & mcq interactions'),
+            text: 'With an interactive text field (assessment mode)'
+        },
+        { href: prepareURL('without variable, with drag-drop matching') + '?mode=lesson', text: 'Drag and Drop Matching 1-to-1' },
+        { href: prepareURL('without variable, with drag-drop sorting') + '?mode=lesson', text: 'Drag and Drop Sorting' },
+        { href: prepareURL('with interval variable, with drag-drop dispenser') + '?mode=lesson', text: 'Drag and Drop Dispenser' },
+        { href: prepareURL('without variable, with plot-graph') + '?mode=lesson', text: 'Simple 2D graph' }
     ];
     const clickListener: (event: MouseEvent) => void = (event: MouseEvent): void => {
         event.preventDefault();
@@ -54,8 +62,15 @@ async function dispatchRoute(event: PopStateEvent): Promise<void> {
     }
     if ('/problem/'.length < route.length && route.startsWith('/problem/')) {
         const problemId: string = route.substring('/problem/'.length);
+        const entity: Problem = (await loadEntity(problemId, PROBLEM_CLASS)) as Problem;
+        if (!entity.templates) {
+            entity.templates = [];
+            for (const id of entity.templateIds) {
+                entity.templates.push((await loadEntity(id, CONTENT_CLASS)) as Content);
+            }
+        }
         const component: Component = new Component();
-        component.entity = await loadProblem(problemId);
+        component.entity = entity;
         component.lessonMode = -1 < problemId.indexOf('mode=lesson');
         showcaseDiv.innerHTML = '';
         showcaseDiv.appendChild(component as any);
