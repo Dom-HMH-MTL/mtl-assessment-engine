@@ -11,7 +11,7 @@ export class BaseModel extends Parent {
 
     public toDdb(): { [key: string]: any } {
         const out: { [key: string]: any } = super.toDdb();
-        out.authorId = super.stringToDdb(this.authorId, '');
+        out.authorId = super.stringToDdb(this.authorId);
         return out;
     }
 

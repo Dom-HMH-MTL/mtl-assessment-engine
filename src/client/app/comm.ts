@@ -1,10 +1,6 @@
 import { BaseModel } from '../model/BaseModel';
-import { Content } from '../model/Content';
 import { Problem } from '../model/Problem';
 import { ProblemResponse } from '../model/ProblemResponse';
-
-export const CONTENT_CLASS: Content = new Content().constructor as any;
-export const PROBLEM_CLASS: Problem = new Problem().constructor as any;
 
 function getUserId(): string {
     const inputField: HTMLElement = document.getElementById('hmhUserId');

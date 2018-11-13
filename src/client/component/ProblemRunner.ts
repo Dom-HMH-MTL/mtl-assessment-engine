@@ -22,36 +22,36 @@ export class ProblemRunner extends ComponentBase<any> {
     protected render(): TemplateResult {
         this.prepareDependencies();
         return html`
-        <link rel="stylesheet" href="/css/theme.css">
-        <style>
-            #template {
-                border: 1px solid grey;
-                padding: 4px 20px;
-                min-height: 1em;
-            }
-            #controls {
-                display: flex;
-                justify-content: space-between;
-            }
-            #check {
-                text-align: right;
-            }
-            #feedback {
-                color: black;
-            }
-            #feedback.positive {
-                color: green;
-            }
-            #feedback.negative {
-                color: red;
-            }
-        </style>
+            <link rel="stylesheet" href="/css/theme.css" />
+            <style>
+                #template {
+                    border: 1px solid grey;
+                    padding: 4px 20px;
+                    min-height: 1em;
+                }
+                #controls {
+                    display: flex;
+                    justify-content: space-between;
+                }
+                #check {
+                    text-align: right;
+                }
+                #feedback {
+                    color: black;
+                }
+                #feedback.positive {
+                    color: green;
+                }
+                #feedback.negative {
+                    color: red;
+                }
+            </style>
 
-        <div id="template">${unsafeHTML(this.prepareStatements().join('\n'))}</div>
-        <div id="controls">
-            <div id="feedback"></div>
-            <button id="check" @click="${this.check.bind(this)}">Check</button>
-        </div>
+            <div id="template">${unsafeHTML(this.prepareStatements().join('\n'))}</div>
+            <div id="controls">
+                <div id="feedback"></div>
+                <button id="check" @click="${this.check.bind(this)}">Check</button>
+            </div>
         `;
     }
 
@@ -150,7 +150,7 @@ export class ProblemRunner extends ComponentBase<any> {
             return accumulator;
         };
         const collectedValues: { [id: string]: any } = collectValues((this as any).shadowRoot.getElementById('template'), {});
-        const problemResponse = Object.assign(new ProblemResponse(), {
+        const problemResponse = Object.assign(ProblemResponse.getInstance(), {
             problemId: this.entity.id,
             values: collectedValues,
             variables: this.entity.variables

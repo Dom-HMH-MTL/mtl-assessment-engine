@@ -28,12 +28,14 @@
         "reflect-metadata": "latest"
     },
     "devDependencies": {
+        "@types/fetch-mock": "latest",
         "@types/jsdom": "latest",
         "@types/node": "latest",
         "@types/node-fetch": "latest",
         "@types/node-sass": "latest",
         "@types/sinon": "latest",
         "concurrently": "latest",
+        "fetch-mock": "latest",
         "intern": "latest",
         "node-sass": "^4.9.4",
         "nodemon": "latest",

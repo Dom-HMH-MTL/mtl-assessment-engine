@@ -21,7 +21,7 @@ export class ContentService extends BaseService<DAO> {
         super(DAO.getInstance());
     }
 
-    public async get(id: string, parameters: { [key: string]: string } = {}, metadata: { [key: string]: string }): Promise<Model> {
+    public async get(id: string, parameters: { [key: string]: string }, metadata: { [key: string]: string }): Promise<Model> {
         const entity: Model = (await super.get(id, parameters, metadata)) as Model;
         if (parameters.recursiveResolution === 'true') {
             // FIXME: do not only process 'en' language
@@ -34,15 +34,16 @@ export class ContentService extends BaseService<DAO> {
         }
         return this.filterOut(entity);
     }
+
     private getFragment(html: string, jsDomLib: any = JSDOM): DocumentFragment {
         return jsDomLib.fragment(html);
     }
 
-    private async fetchRelatedContent(template: Node, parameters: { [key: string]: string } = {}, metadata: { [key: string]: string }): Promise<string> {
+    private async fetchRelatedContent(template: Node, parameters: { [key: string]: string }, metadata: { [key: string]: string }): Promise<string> {
         let child: Element = template.firstChild as Element;
         while (child) {
             if (child.nodeType === child.ELEMENT_NODE) {
-                const contentURI: string = child.getAttribute ? child.getAttribute('content-uri') : null;
+                const contentURI: string = child.getAttribute('content-uri');
                 if (contentURI) {
                     const relatedContent: Model = await this.get(contentURI, parameters, metadata);
                     // FIXME: do not only process 'en' language

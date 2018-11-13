@@ -7,6 +7,10 @@ const { suite, test, beforeEach, afterEach } = intern.getInterface('tdd');
 const { assert } = intern.getPlugin('chai');
 
 class TestModel extends Problem {
+    public static getInstance(): TestModel {
+        return new TestModel();
+    }
+
     public additional: number;
 }
 
@@ -17,11 +21,11 @@ suite(
 
         beforeEach(
             (): void => {
-                source = Object.assign(new TestModel(), {
+                source = Object.assign(TestModel.getInstance(), {
                     additional: 999,
                     dependencies: ['000'],
                     templateIds: ['111', '222'],
-                    templates: [Object.assign(new Content(), { text: { en: 'this is a template' } })],
+                    templates: [Object.assign(Content.getInstance(), { text: { en: 'this is a template' } })],
                     variables: []
                 });
             }
@@ -34,7 +38,7 @@ suite(
         );
 
         test('static factory', (): void => {
-            assert.deepEqual(Problem.getInstance(), new Problem());
+            assert.deepEqual(Problem.getInstance(), Problem.getInstance());
         });
 
         suite(
@@ -66,7 +70,9 @@ suite(
                     assert.deepEqual(result.dependencies, ['000']);
                     assert.deepEqual(result.templateIds, ['aaa']);
                     assert.isUndefined(result.templates);
-                    assert.deepEqual(result.variables, [Object.assign(new Variable(), { authorId: undefined, type: 'text', text: 'ttt', precision: 0 })]);
+                    assert.deepEqual(result.variables, [
+                        Object.assign(Variable.getInstance(), { authorId: undefined, type: 'text', text: 'ttt', precision: 0 })
+                    ]);
                     assert.strictEqual(result.additional, 999);
                 });
             }
@@ -128,7 +134,7 @@ suite(
                     assert.deepEqual(result.dependencies, ['000']);
                     assert.deepEqual(result.templateIds, ['aaa']);
                     assert.deepEqual(result.templates[0].text, { en: 'another template' });
-                    assert.deepEqual(result.variables, [new Variable().fromHttp(content.variables[0])]);
+                    assert.deepEqual(result.variables, [Variable.getInstance().fromHttp(content.variables[0])]);
                     assert.strictEqual(result.additional, 999);
                 });
             }
@@ -157,7 +163,9 @@ suite(
                     const result: { [key: string]: any } = source.toHttp();
                     assert.deepEqual(result.dependencies, ['000']);
                     assert.deepEqual(result.templateIds, ['111', '222']);
-                    assert.deepEqual(result.templates, [{ authorId: undefined, id: undefined, text: { en: 'this is a template' }, type: undefined }]);
+                    assert.deepEqual(result.templates, [
+                        { authorId: undefined, id: undefined, text: { en: 'this is a template' }, type: undefined, description: undefined }
+                    ]);
                     assert.deepEqual(result.variables, ['here']);
                 });
             }

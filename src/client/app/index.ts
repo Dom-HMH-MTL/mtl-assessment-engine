@@ -1,7 +1,7 @@
 import { ProblemRunner as Component } from '../component/ProblemRunner';
-import { Content } from '../model/Content';
-import { Problem } from '../model/Problem';
-import { CONTENT_CLASS, loadEntity, PROBLEM_CLASS } from './comm';
+import { Content, CONTENT_CLASS } from '../model/Content';
+import { Problem, PROBLEM_CLASS } from '../model/Problem';
+import { loadEntity } from './comm';
 
 function prepareURL(problemId: string): string {
     return '/problem/' + encodeURI(problemId).replace(/\//g, '%2f');

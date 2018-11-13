@@ -15,14 +15,20 @@ export class Content extends Parent {
         return new Content();
     }
 
-    public type: string;
-    public content: { [languageKey: string]: string };
     public audioURI: { [languageKey: string]: string };
+    public description: string;
+    public text: { [languageKey: string]: string };
+    public type: string;
+
+    protected constructor() {
+        super();
+    }
 
     public fromDdb(content: { [key: string]: any }): Content {
         super.fromDdb(content);
 
         this.type = super.stringFromDdb(content.type);
+        this.description = super.stringFromDdb(content.description);
         if (content.text) {
             const temp: { [language: string]: any } = super.mapFromDdb(content.text);
             for (const language of Object.keys(temp)) {
@@ -39,7 +45,7 @@ export class Content extends Parent {
             }
             this.audioURI = temp;
         } else {
-            this.authorURI = {};
+            this.audioURI = {};
         }
 
         return this;
@@ -49,6 +55,7 @@ export class Content extends Parent {
         const out: { [key: string]: any } = super.toDdb();
 
         out.type = super.stringToDdb(this.type);
+        out.description = super.stringToDdb(this.description);
         if (this.text) {
             const temp: { [language: string]: any } = {};
             for (const language of Object.keys(this.text)) {
@@ -56,12 +63,12 @@ export class Content extends Parent {
             }
             out.text = super.mapToDdb(temp);
         }
-        if (this.audioURL) {
+        if (this.audioURI) {
             const temp: { [language: string]: any } = {};
-            for (const language of Object.keys(this.audioURL)) {
-                temp[language] = super.stringToDdb(this.audioURL[language]);
+            for (const language of Object.keys(this.audioURI)) {
+                temp[language] = super.stringToDdb(this.audioURI[language]);
             }
-            out.audioURL = super.mapToDdb(temp);
+            out.audioURI = super.mapToDdb(temp);
         }
 
         return out;
@@ -71,6 +78,7 @@ export class Content extends Parent {
         super.fromHttp(content);
 
         this.type = content.type;
+        this.description = content.description;
         this.text = content.text || {};
         this.audioURI = content.audioURI || {};
 
@@ -81,6 +89,7 @@ export class Content extends Parent {
         const out: { [key: string]: any } = super.toHttp();
 
         out.type = this.type;
+        out.description = this.description;
         if (this.text && 0 < Object.keys(this.text).length) {
             out.text = this.text;
         }
@@ -91,3 +100,6 @@ export class Content extends Parent {
         return out;
     }
 }
+
+export const CONTENT_CLASS: Content = Content.getInstance().constructor as any;
+export const CONTENT_CLASS_NAME: string = CONTENT_CLASS.name;

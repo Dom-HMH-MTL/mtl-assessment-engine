@@ -15,11 +15,15 @@ export class ProblemResponse extends Parent {
     public feedbackType?: FeedbackType;
     public score?: number;
 
+    private constructor() {
+        super();
+    }
+
     public fromDdb(content: { [key: string]: any }): ProblemResponse {
         super.fromDdb(content);
 
         this.problemId = super.stringFromDdb(content.problemId);
-        this.variables = super.listFromDdb(content.variables, []).map((variable: any): Variable => new Variable().fromDdb(super.mapFromDdb(variable)));
+        this.variables = super.listFromDdb(content.variables, []).map((variable: any): Variable => Variable.getInstance().fromDdb(super.mapFromDdb(variable)));
 
         if (content.values) {
             const temp: { [interactionId: string]: any } = super.mapFromDdb(content.values);
@@ -33,7 +37,7 @@ export class ProblemResponse extends Parent {
         if (content.evaluations) {
             const temp: { [interactionId: string]: any } = super.mapFromDdb(content.evaluations);
             for (const interactionId of Object.keys(temp)) {
-                temp[interactionId] = new ResponseValidation().fromDdb(super.mapFromDdb(temp[interactionId]));
+                temp[interactionId] = ResponseValidation.getInstance().fromDdb(super.mapFromDdb(temp[interactionId]));
             }
             this.evaluations = temp;
         } else {
@@ -76,12 +80,17 @@ export class ProblemResponse extends Parent {
     public fromHttp(content: { [key: string]: any }): ProblemResponse {
         super.fromHttp(content);
 
-        this.problemId = content.problemId || '';
-        this.variables = (content.variables || []).map((variable: any): Variable => new Variable().fromHttp(variable));
+        this.problemId = content.problemId;
+        this.variables = (content.variables || []).map((variable: any): Variable => Variable.getInstance().fromHttp(variable));
         this.values = content.values || {};
-        this.evaluations = (content.evaluations || []).map((evaluation: any): ResponseValidation => new ResponseValidation().fromHttp(evaluation));
+        this.evaluations = {};
+        if (content.evaluations) {
+            for (const interactionId of Object.keys(content.evaluations)) {
+                this.evaluations[interactionId] = ResponseValidation.getInstance().fromDdb(super.mapFromDdb(content.evaluations[interactionId]));
+            }
+        }
         this.feedbackType = content.feedbackType;
-        this.score = content.score || 0;
+        this.score = content.score;
 
         return this;
     }

@@ -66,14 +66,15 @@ function prepareInterval(index: number, variable: Variable, variables: Variable[
     return distributed;
 }
 
-function evaluateExpression(index: number, variable: Variable, variables: Variable[]): number | string {
+// `export`-ed for test purposes only
+export function evaluateExpression(index: number, variable: Variable, variables: Variable[]): number | string {
+    const expression: string = injectVariables(variable.expression || '', variables, index);
     try {
         // tslint:disable-next-line: no-eval
-        return eval(injectVariables(variable.expression, variables, index));
+        return eval(expression);
     } catch (ex) {
         // tslint:disable-next-line: no-console
-        console.log('Expression evaluation of', variable, 'failed with:\n', ex);
+        console.log('>>> Expression evaluation of', variable, 'failed!\n>>> Produced expression:', expression, '\n>>> Error: ', ex);
         return `Incorrect expression V[${index}]`;
     }
-    // return 15;
 }

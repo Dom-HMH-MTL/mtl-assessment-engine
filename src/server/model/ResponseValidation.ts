@@ -14,10 +14,14 @@ export class ResponseValidation extends BaseModel {
     public score: number;
     public strategy: Strategy;
 
+    protected constructor() {
+        super();
+    }
+
     public fromDdb(content: { [key: string]: any }): ResponseValidation {
         super.fromDdb(content);
 
-        this.expected = super.stringFromDdb(content.expected, null);
+        this.expected = super.stringFromDdb(content.expected);
         this.feedbackType = super.stringFromDdb(content.feedbackType, FeedbackType.POSITIVE) as FeedbackType;
         this.score = super.numberFromDdb(content.score, 0);
         this.strategy = super.stringFromDdb(content.strategy, Strategy.EXACT_MATCH) as Strategy;
@@ -28,7 +32,7 @@ export class ResponseValidation extends BaseModel {
     public toDdb(): { [key: string]: any } {
         const out: { [key: string]: any } = super.toDdb();
 
-        out.expected = super.stringToDdb(this.expected, null);
+        out.expected = super.stringToDdb(this.expected);
         out.feedbackType = super.stringToDdb(this.feedbackType as FeedbackType, FeedbackType.POSITIVE);
         out.score = super.numberToDdb(this.score, 0);
         out.strategy = super.stringToDdb(this.strategy as Strategy, Strategy.EXACT_MATCH);
@@ -39,7 +43,7 @@ export class ResponseValidation extends BaseModel {
     public fromHttp(content: { [key: string]: any }): ResponseValidation {
         super.fromHttp(content);
 
-        this.expected = content.expected || null;
+        this.expected = content.expected;
         this.feedbackType = content.feedbackType || FeedbackType.POSITIVE;
         this.score = content.score || 0;
         this.strategy = content.strategy || Strategy.EXACT_MATCH;

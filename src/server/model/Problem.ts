@@ -10,8 +10,12 @@ export class Problem extends Parent {
 
     public dependencies: string[] = [];
     public templateIds: string[] = [];
-    public templates: Content[];
+    public templates?: Content[];
     public variables: Variable[] = [];
+
+    protected constructor() {
+        super();
+    }
 
     public fromDdb(content: { [key: string]: any }): Problem {
         super.fromDdb(content);
@@ -20,7 +24,7 @@ export class Problem extends Parent {
         this.templateIds = super.listFromDdb(content.templateIds, []).map((statement: string): string => super.stringFromDdb(statement));
         // this.templates is not serialized
 
-        this.variables = super.listFromDdb(content.variables, []).map((variable: any): Variable => new Variable().fromDdb(super.mapFromDdb(variable)));
+        this.variables = super.listFromDdb(content.variables, []).map((variable: any): Variable => Variable.getInstance().fromDdb(super.mapFromDdb(variable)));
 
         return this;
     }
@@ -43,10 +47,10 @@ export class Problem extends Parent {
         this.dependencies = content.dependencies || [];
         this.templateIds = content.templateIds;
         if (Array.isArray(content.templates)) {
-            this.templates = content.templates.map((template: { [key: string]: any }): Content => new Content().fromHttp(template));
+            this.templates = content.templates.map((template: { [key: string]: any }): Content => Content.getInstance().fromHttp(template));
         }
 
-        this.variables = (content.variables || []).map((variable: any): Variable => new Variable().fromHttp(variable));
+        this.variables = (content.variables || []).map((variable: any): Variable => Variable.getInstance().fromHttp(variable));
 
         return this;
     }
@@ -69,3 +73,6 @@ export class Problem extends Parent {
         return out;
     }
 }
+
+export const PROBLEM_CLASS: Problem = Problem.getInstance().constructor as any;
+export const PROBLEM_CLASS_NAME: string = PROBLEM_CLASS.name;
