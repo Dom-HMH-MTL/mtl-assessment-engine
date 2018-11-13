@@ -9,13 +9,17 @@ const { assert } = intern.getPlugin('chai');
 suite(
     __filename.substring(__filename.indexOf('/server-unit/') + '/server-unit/'.length),
     (): void => {
-        beforeEach((): void => {
-            saveConfig(null);
-            saveConfig({ activeMode: 'test', test: { NodeServer: { cacheControlStrategy: {} } } });
-        });
-        afterEach((): void => {
-            saveConfig(null);
-        });
+        beforeEach(
+            (): void => {
+                saveConfig(null);
+                saveConfig({ activeMode: 'test', test: { AWS: { DynamoDB: {} }, NodeServer: { cacheControlStrategy: {} } } });
+            }
+        );
+        afterEach(
+            (): void => {
+                saveConfig(null);
+            }
+        );
 
         test('getInstance()', (): void => {
             const resource: Resource = Resource.getInstance();

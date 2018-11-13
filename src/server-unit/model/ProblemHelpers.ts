@@ -1,4 +1,5 @@
 import intern from 'intern';
+import { Content } from '../../server/model/Content';
 import { Problem } from '../../server/model/Problem';
 import { cleanHTML, prepareStatements } from '../../server/model/ProblemHelpers';
 import { Variable, VariableType } from '../../server/model/Variable';
@@ -12,15 +13,20 @@ suite(
         suite(
             'prepareStatements',
             (): void => {
+                test('not fully fetched', (): void => {
+                    const problem: Problem = new Problem();
+                    assert.throws(() => prepareStatements(problem), 'Template data has not been loaded!');
+                });
                 test('no statement', (): void => {
                     const problem: Problem = new Problem();
+                    problem.templates = [];
                     const statements: string[] = prepareStatements(problem);
                     assert.deepEqual(statements, []);
                     assert.deepEqual(prepareStatements(problem), statements); // To verify it has been cached!
                 });
                 test('one statement, no variable', (): void => {
                     const problem: Problem = new Problem();
-                    problem.template.push('First statement');
+                    problem.templates = [Object.assign(new Content(), { text: { en: 'First statement' }, type: 'chapter' })];
                     assert.deepEqual(prepareStatements(problem), ['First statement']);
                 });
                 test('one statement, one `text` variable', (): void => {
@@ -28,7 +34,7 @@ suite(
                     variable.type = VariableType.text;
                     variable.text = 'TEXT';
                     const problem: Problem = new Problem();
-                    problem.template.push('First statement with some $V[0]');
+                    problem.templates = [Object.assign(new Content(), { text: { en: 'First statement with some $V[0]' }, type: 'chapter' })];
                     problem.variables.push(variable);
                     assert.deepEqual(prepareStatements(problem), ['First statement with some TEXT']);
                 });

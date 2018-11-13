@@ -42,7 +42,7 @@ export class Problem extends Parent {
 
         this.dependencies = content.dependencies || [];
         this.templateIds = content.templateIds;
-        if (content.templates) {
+        if (Array.isArray(content.templates)) {
             this.templates = content.templates.map((template: { [key: string]: any }): Content => new Content().fromHttp(template));
         }
 
