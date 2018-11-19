@@ -1,4 +1,5 @@
 import { BaseModel as Parent } from './BaseModel';
+import { Content } from './Content';
 import { Variable } from './Variable';
 
 export class Problem extends Parent {
@@ -8,16 +9,22 @@ export class Problem extends Parent {
     }
 
     public dependencies: string[] = [];
-    public template: string[] = [];
+    public templateIds: string[] = [];
+    public templates?: Content[];
     public variables: Variable[] = [];
+
+    protected constructor() {
+        super();
+    }
 
     public fromDdb(content: { [key: string]: any }): Problem {
         super.fromDdb(content);
 
         this.dependencies = super.listFromDdb(content.dependencies, []).map((statement: string): string => super.stringFromDdb(statement));
-        this.template = super.listFromDdb(content.template, []).map((statement: string): string => super.stringFromDdb(statement));
+        this.templateIds = super.listFromDdb(content.templateIds, []).map((statement: string): string => super.stringFromDdb(statement));
+        // this.templates is not serialized
 
-        this.variables = super.listFromDdb(content.variables, []).map((variable: any): Variable => new Variable().fromDdb(super.mapFromDdb(variable)));
+        this.variables = super.listFromDdb(content.variables, []).map((variable: any): Variable => Variable.getInstance().fromDdb(super.mapFromDdb(variable)));
 
         return this;
     }
@@ -26,7 +33,8 @@ export class Problem extends Parent {
         const out: { [key: string]: any } = super.toDdb();
 
         out.dependencies = super.listToDdb(this.dependencies.map((dependency: string): { [key: string]: any } => super.stringToDdb(dependency)), []);
-        out.template = super.listToDdb(this.template.map((statement: string): { [key: string]: any } => super.stringToDdb(statement)), []);
+        out.templateIds = super.listToDdb(this.templateIds.map((statement: string): { [key: string]: any } => super.stringToDdb(statement)), []);
+        // this.templates is not serialized
 
         out.variables = super.listToDdb(this.variables.map((variable: Variable): { [key: string]: any } => ({ M: variable.toDdb() })), []);
 
@@ -37,9 +45,12 @@ export class Problem extends Parent {
         super.fromHttp(content);
 
         this.dependencies = content.dependencies || [];
-        this.template = content.template;
+        this.templateIds = content.templateIds;
+        if (Array.isArray(content.templates)) {
+            this.templates = content.templates.map((template: { [key: string]: any }): Content => Content.getInstance().fromHttp(template));
+        }
 
-        this.variables = (content.variables || []).map((variable: any): Variable => new Variable().fromHttp(variable));
+        this.variables = (content.variables || []).map((variable: any): Variable => Variable.getInstance().fromHttp(variable));
 
         return this;
     }
@@ -50,7 +61,10 @@ export class Problem extends Parent {
         if (0 < this.dependencies.length) {
             out.dependencies = this.dependencies;
         }
-        out.template = this.template;
+        out.templateIds = this.templateIds;
+        if (this.templates) {
+            out.templates = this.templates.map((template: Content): { [key: string]: any } => template.toHttp());
+        }
 
         if (0 < this.variables.length) {
             out.variables = this.variables.map((variable: Variable) => variable.toHttp());
@@ -59,3 +73,6 @@ export class Problem extends Parent {
         return out;
     }
 }
+
+export const PROBLEM_CLASS: Problem = Problem.getInstance().constructor as any;
+export const PROBLEM_CLASS_NAME: string = PROBLEM_CLASS.name;

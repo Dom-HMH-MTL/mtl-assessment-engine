@@ -1,23 +1,26 @@
+import { BaseModel } from '../model/BaseModel';
 import { Problem } from '../model/Problem';
-import { ProblemResponse } from '../model/ProblemResponse';
 
 function getUserId(): string {
     const inputField: HTMLElement = document.getElementById('hmhUserId');
     return (inputField as HTMLInputElement).value || '12345';
 }
 
-export async function loadProblem(id: string): Promise<Problem> {
-    return fetch('/api/v1/ang-eng/Problem/' + id, { headers: { accept: 'application/json', 'X-HMH-User-Id': getUserId() }, method: 'GET' })
+export async function httpGet(id: string, modelClass: BaseModel): Promise<BaseModel> {
+    return fetch('/api/v1/ang-eng/' + modelClass.name + '/' + id, {
+        headers: { accept: 'application/json', 'X-HMH-User-Id': getUserId() },
+        method: 'GET'
+    })
         .then((response: Response): any => response.json())
         .then(
             (model: any): Problem => {
-                return new Problem().fromHttp(model);
+                return modelClass.getInstance().fromHttp(model);
             }
         );
 }
 
-export async function evaluateProblemResponse(model: ProblemResponse): Promise<string> {
-    return fetch('/api/v1/ang-eng/ProblemResponse', {
+export async function httpCreate(model: BaseModel): Promise<string> {
+    return fetch('/api/v1/ang-eng/' + model.constructor.name, {
         body: JSON.stringify(model.toHttp()),
         headers: { accept: 'application/json', 'content-type': 'application/json', 'X-HMH-User-Id': getUserId() },
         method: 'POST'

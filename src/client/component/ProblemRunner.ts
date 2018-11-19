@@ -1,6 +1,7 @@
 import { applyMixins, ComponentBase, ContentComponent, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult } from '@hmh/component-base';
-import { evaluateProblemResponse, loadProblem } from '../app/comm';
-import { Problem as Model } from '../model/Problem';
+import { httpCreate, httpGet } from '../app/comm';
+import { Content, CONTENT_CLASS } from '../model/Content';
+import { Problem, PROBLEM_CLASS } from '../model/Problem';
 import { prepareStatements } from '../model/ProblemHelpers';
 import { ProblemResponse } from '../model/ProblemResponse';
 
@@ -8,45 +9,52 @@ export class ProblemRunner extends ContentComponent implements Feedback {
     @property({ type: Boolean, reflect: true, attribute: 'lesson-mode' })
     public lessonMode: boolean = false;
 
-    private entity: Model = null;
+    private entity: Problem = null;
 
     public async fetchContent(): Promise<string> {
-        this.entity = await loadProblem(this.src);
+        const entity: Problem = (await httpGet(this.src, PROBLEM_CLASS)) as Problem;
+        if (!entity.templates) {
+            entity.templates = [];
+            for (const id of entity.templateIds) {
+                entity.templates.push((await httpGet(id, CONTENT_CLASS)) as Content);
+            }
+        }
+        this.entity = entity;
         await this.prepareDependencies();
         return `<div id="template">${this.prepareStatements().join('\n')}</div>`;
     }
 
     protected render(): TemplateResult {
         return html`
-        <style>
-            #template {
-                border: 1px solid grey;
-                padding: 4px 20px;
-                min-height: 1em;
-            }
-            #controls {
-                display: flex;
-                justify-content: space-between;
-            }
-            #check {
-                text-align: right;
-            }
-            #feedback {
-                color: black;
-            }
-            #feedback.positive {
-                color: green;
-            }
-            #feedback.negative {
-                color: red;
-            }
-        </style>
+            <style>
+                #template {
+                    border: 1px solid grey;
+                    padding: 4px 20px;
+                    min-height: 1em;
+                }
+                #controls {
+                    display: flex;
+                    justify-content: space-between;
+                }
+                #check {
+                    text-align: right;
+                }
+                #feedback {
+                    color: black;
+                }
+                #feedback.positive {
+                    color: green;
+                }
+                #feedback.negative {
+                    color: red;
+                }
+            </style>
 
-        <slot @slotchange="${(event: Event) => this.onSlotChanged(event)}"></slot>
-        <div id="controls">
-            <div id="feedback"></div>
-            <button id="check" @click="${this.check.bind(this)}">Check</button>
-        </div>
+            <slot @slotchange="${(event: Event) => this.onSlotChanged(event)}"></slot>
+            <div id="controls">
+                <div id="feedback"></div>
+                <button id="check" @click="${this.check.bind(this)}">Check</button>
+            </div>
         `;
     }
 
@@ -145,12 +153,12 @@ export class ProblemRunner extends ContentComponent implements Feedback {
             return accumulator;
         };
         const collectedValues: { [id: string]: any } = collectValues(this.querySelector('#template'), {});
-        const problemResponse = Object.assign(new ProblemResponse(), {
+        const problemResponse = Object.assign(ProblemResponse.getInstance(), {
             problemId: this.entity.id,
             values: collectedValues,
             variables: this.entity.variables
         });
-        return evaluateProblemResponse(problemResponse);
+        return httpCreate(problemResponse);
     }
 }
 

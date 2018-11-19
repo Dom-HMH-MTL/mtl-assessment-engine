@@ -1,7 +1,7 @@
 import intern from 'intern';
 
 import { saveConfig } from '@hmh/nodejs-base-server';
-import { ProblemResource as Resource } from '../../server/resource/ProblemResource';
+import { ContentResource as Resource } from '../../server/resource/ContentResource';
 
 const { suite, test, beforeEach, afterEach } = intern.getInterface('tdd');
 const { assert } = intern.getPlugin('chai');

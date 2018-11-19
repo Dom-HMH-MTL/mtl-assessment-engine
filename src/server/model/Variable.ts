@@ -32,6 +32,10 @@ export class Variable extends Parent {
     // expression
     public expression?: string;
 
+    protected constructor() {
+        super();
+    }
+
     public fromDdb(content: { [key: string]: any }): Variable {
         super.fromDdb(content);
 
@@ -56,7 +60,7 @@ export class Variable extends Parent {
         }
 
         if (content.cachedValue !== undefined) {
-            this.cachedValue = content.cachedValue;
+            this.cachedValue = super.stringFromDdb(JSON.parse(content.cachedValue));
         }
 
         return this;
@@ -88,7 +92,7 @@ export class Variable extends Parent {
         }
 
         if (this.cachedValue !== undefined) {
-            out.cachedValue = this.cachedValue;
+            out.cachedValue = super.stringToDdb(JSON.stringify(this.cachedValue));
         }
 
         return out;
@@ -103,7 +107,7 @@ export class Variable extends Parent {
 
         switch (this.type) {
             case VariableType.expression:
-                this.expression = content.expression || '';
+                this.expression = content.expression;
                 break;
             case VariableType.interval:
                 this.excludes = content.excludes || [];
