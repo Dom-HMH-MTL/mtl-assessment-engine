@@ -1,13 +1,12 @@
 import { BaseModel } from '../model/BaseModel';
 import { Problem } from '../model/Problem';
-import { ProblemResponse } from '../model/ProblemResponse';
 
 function getUserId(): string {
     const inputField: HTMLElement = document.getElementById('hmhUserId');
     return (inputField as HTMLInputElement).value || '12345';
 }
 
-export async function loadEntity(id: string, modelClass: BaseModel): Promise<BaseModel> {
+export async function httpGet(id: string, modelClass: BaseModel): Promise<BaseModel> {
     return fetch('/api/v1/ang-eng/' + modelClass.name + '/' + id, {
         headers: { accept: 'application/json', 'X-HMH-User-Id': getUserId() },
         method: 'GET'
@@ -20,8 +19,8 @@ export async function loadEntity(id: string, modelClass: BaseModel): Promise<Bas
         );
 }
 
-export async function evaluateProblemResponse(model: ProblemResponse): Promise<string> {
-    return fetch('/api/v1/ang-eng/ProblemResponse', {
+export async function httpCreate(model: BaseModel): Promise<string> {
+    return fetch('/api/v1/ang-eng/' + model.constructor.name, {
         body: JSON.stringify(model.toHttp()),
         headers: { accept: 'application/json', 'content-type': 'application/json', 'X-HMH-User-Id': getUserId() },
         method: 'POST'

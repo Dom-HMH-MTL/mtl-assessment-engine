@@ -1,5 +1,5 @@
 import { applyMixins, ComponentBase, ContentComponent, Feedback, FeedbackMessage, FeedbackType, html, property, TemplateResult } from '@hmh/component-base';
-import { evaluateProblemResponse, loadEntity } from '../app/comm';
+import { httpCreate, httpGet } from '../app/comm';
 import { Content, CONTENT_CLASS } from '../model/Content';
 import { Problem, PROBLEM_CLASS } from '../model/Problem';
 import { prepareStatements } from '../model/ProblemHelpers';
@@ -12,11 +12,11 @@ export class ProblemRunner extends ContentComponent implements Feedback {
     private entity: Problem = null;
 
     public async fetchContent(): Promise<string> {
-        const entity: Problem = (await loadEntity(this.src, PROBLEM_CLASS)) as Problem;
+        const entity: Problem = (await httpGet(this.src, PROBLEM_CLASS)) as Problem;
         if (!entity.templates) {
             entity.templates = [];
             for (const id of entity.templateIds) {
-                entity.templates.push((await loadEntity(id, CONTENT_CLASS)) as Content);
+                entity.templates.push((await httpGet(id, CONTENT_CLASS)) as Content);
             }
         }
         this.entity = entity;
@@ -158,7 +158,7 @@ export class ProblemRunner extends ContentComponent implements Feedback {
             values: collectedValues,
             variables: this.entity.variables
         });
-        return evaluateProblemResponse(problemResponse);
+        return httpCreate(problemResponse);
     }
 }
 
