@@ -7,6 +7,10 @@ const { suite, test, beforeEach, afterEach } = intern.getInterface('tdd');
 const { assert } = intern.getPlugin('chai');
 
 class TestModel extends ProblemResponse {
+    public static getInstance(): TestModel {
+        return new TestModel();
+    }
+
     public additional: number;
 }
 
@@ -17,9 +21,9 @@ suite(
 
         beforeEach(
             (): void => {
-                source = Object.assign(new TestModel(), {
+                source = Object.assign(TestModel.getInstance(), {
                     evaluations: {
-                        widgetId: Object.assign(new ResponseValidation(), {
+                        widgetId: Object.assign(ResponseValidation.getInstance(), {
                             expected: '2',
                             feedbackType: FeedbackType.NEUTRAL,
                             score: 2,
@@ -30,7 +34,7 @@ suite(
                     problemId: 'prob-12345',
                     score: 345,
                     values: { widgetId: 'this is a value' },
-                    variables: [Object.assign(new Variable(), { text: 'this is text', type: 'text' })]
+                    variables: [Object.assign(Variable.getInstance(), { text: 'this is text', type: 'text' })]
                 });
             }
         );
@@ -42,7 +46,7 @@ suite(
         );
 
         test('static factory', (): void => {
-            assert.deepEqual(ProblemResponse.getInstance(), new ProblemResponse());
+            assert.deepEqual(ProblemResponse.getInstance(), ProblemResponse.getInstance());
         });
 
         suite(
@@ -70,7 +74,7 @@ suite(
                     const result: TestModel = source.fromDdb(content) as TestModel;
                     assert.strictEqual(result, source);
                     assert.deepEqual(result.evaluations, {
-                        otherId: Object.assign(new ResponseValidation(), {
+                        otherId: Object.assign(ResponseValidation.getInstance(), {
                             authorId: 'loggedUserId',
                             expected: '3',
                             feedbackType: FeedbackType.POSITIVE,
@@ -82,7 +86,7 @@ suite(
                     assert.strictEqual(result.problemId, 'prob-99999');
                     assert.strictEqual(result.score, 4);
                     assert.deepEqual(result.values, { otherId: 'serialized data' });
-                    assert.deepEqual(result.variables, [Object.assign(new Variable(), { authorId: undefined, text: 'some text', type: 'text' })]);
+                    assert.deepEqual(result.variables, [Object.assign(Variable.getInstance(), { authorId: undefined, text: 'some text', type: 'text' })]);
                 });
             }
         );
@@ -91,7 +95,7 @@ suite(
             'toDdb()',
             (): void => {
                 test('with minimal output', (): void => {
-                    const otherSource: TestModel = new TestModel();
+                    const otherSource: TestModel = TestModel.getInstance();
                     delete otherSource.evaluations;
                     delete otherSource.values;
                     const result: { [key: string]: any } = otherSource.toDdb();
@@ -160,7 +164,7 @@ suite(
                     const result: TestModel = source.fromHttp(content) as TestModel;
                     assert.strictEqual(result, source);
                     assert.deepEqual(result.evaluations, {
-                        otherId: Object.assign(new ResponseValidation(), {
+                        otherId: Object.assign(ResponseValidation.getInstance(), {
                             authorId: 'loggedUserId',
                             expected: '3',
                             feedbackType: FeedbackType.POSITIVE,
@@ -173,7 +177,7 @@ suite(
                     assert.strictEqual(result.score, 4);
                     assert.deepEqual(result.values, { otherId: 'serialized data' });
                     assert.deepEqual(result.variables, [
-                        Object.assign(new Variable(), { authorId: undefined, id: undefined, text: 'some text', type: 'text' })
+                        Object.assign(Variable.getInstance(), { authorId: undefined, id: undefined, text: 'some text', type: 'text' })
                     ]);
                 });
             }
@@ -183,7 +187,7 @@ suite(
             'toHttp()',
             (): void => {
                 test('with minimal output - I', (): void => {
-                    const otherSource: TestModel = new TestModel();
+                    const otherSource: TestModel = TestModel.getInstance();
                     const result: { [key: string]: any } = otherSource.toHttp();
                     assert.deepEqual(result, {
                         authorId: undefined,

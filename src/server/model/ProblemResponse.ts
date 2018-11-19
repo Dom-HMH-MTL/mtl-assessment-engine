@@ -15,7 +15,7 @@ export class ProblemResponse extends Parent {
     public feedbackType?: FeedbackType;
     public score?: number;
 
-    private constructor() {
+    protected constructor() {
         super();
     }
 
@@ -118,3 +118,6 @@ export class ProblemResponse extends Parent {
         return out;
     }
 }
+
+export const PROBLEM_RESPONSE_CLASS: ProblemResponse = ProblemResponse.getInstance().constructor as any;
+export const PROBLEM_RESPONSE_CLASS_NAME: string = PROBLEM_RESPONSE_CLASS.name;

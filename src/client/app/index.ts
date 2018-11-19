@@ -1,7 +1,4 @@
 import { ProblemRunner as Component } from '../component/ProblemRunner';
-import { Content, CONTENT_CLASS } from '../model/Content';
-import { Problem, PROBLEM_CLASS } from '../model/Problem';
-import { loadEntity } from './comm';
 
 function prepareURL(problemId: string): string {
     return '/problem/' + encodeURI(problemId).replace(/\//g, '%2f');
@@ -62,18 +59,18 @@ async function dispatchRoute(event: PopStateEvent): Promise<void> {
     }
     if ('/problem/'.length < route.length && route.startsWith('/problem/')) {
         const problemId: string = route.substring('/problem/'.length);
-        const entity: Problem = (await loadEntity(problemId, PROBLEM_CLASS)) as Problem;
-        if (!entity.templates) {
-            entity.templates = [];
-            for (const id of entity.templateIds) {
-                entity.templates.push((await loadEntity(id, CONTENT_CLASS)) as Content);
-            }
-        }
         const component: Component = new Component();
-        component.entity = entity;
-        component.lessonMode = -1 < problemId.indexOf('mode=lesson');
+        component.src = problemId;
+        component.lessonMode = problemId.includes('mode=lesson');
+        component.hidden = true;
         showcaseDiv.innerHTML = '';
         showcaseDiv.appendChild(component as any);
+
+        setTimeout(() => {
+            // Remove the hidden attribute
+            document.querySelector('hmh-assess-problem').removeAttribute('hidden');
+        }, 250);
+
         return;
     }
     // if ('/assessment'.length ...) {
