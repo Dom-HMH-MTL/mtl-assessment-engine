@@ -1,14 +1,14 @@
-import * as fetch from 'node-fetch';
+import fetch, { Request, RequestInit, Response } from 'node-fetch';
 
 import { BaseException } from '@hmh/nodejs-base-server';
 import { BaseModel } from '../model/BaseModel';
 
-export type FetchFunction = (url: string | fetch.Request, init?: fetch.RequestInit) => Promise<fetch.Response>;
+type FetchFunction = (url: string | Request, init?: RequestInit) => Promise<Response>;
 
 export async function httpGet(url: string, userId: string, modelClass: BaseModel, injectedFetch: FetchFunction = fetch): Promise<BaseModel> {
     return injectedFetch(url, { headers: { accept: 'application/json', 'content-type': 'application/json', 'X-HMH-User-Id': userId }, method: 'GET' })
         .then(
-            async (response: fetch.Response): Promise<any> => {
+            async (response: Response): Promise<any> => {
                 const status: number = response.status;
                 if (status === 200) {
                     return response.json();
@@ -24,7 +24,7 @@ export async function httpGet(url: string, userId: string, modelClass: BaseModel
 export async function httpSelect(url: string, userId: string, modelClass: BaseModel, injectedFetch: FetchFunction = fetch): Promise<BaseModel[]> {
     return injectedFetch(url, { headers: { accept: 'application/json', 'content-type': 'application/json', 'X-HMH-User-Id': userId }, method: 'GET' })
         .then(
-            async (response: fetch.Response): Promise<any> => {
+            async (response: Response): Promise<any> => {
                 const status: number = response.status;
                 if (status === 200) {
                     return response.json();
@@ -50,7 +50,7 @@ export async function httpCreate(url: string, entity: BaseModel, userId: string,
         headers: { accept: 'application/json', 'content-type': 'application/json', 'X-HMH-User-Id': userId },
         method: 'POST'
     }).then(
-        async (response: fetch.Response): Promise<any> => {
+        async (response: Response): Promise<any> => {
             const status: number = response.status;
             if (status === 201) {
                 return response.headers.get('Location');
