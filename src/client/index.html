@@ -1,38 +1,45 @@
+<!DOCTYPE html>
 <html>
+    <head>
+        <link rel="modulepreload" href="/app/index.js" />
+        <link rel="modulepreload" href="/app/comm.js" />
+        <link rel="modulepreload" href="/component/ProblemRunner.js" />
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+        <link rel="preload" href="/css/theme.css" as="style" />
+        <link rel="preload" href="/fonts/avenir/6398ed27-3c28-4cf6-baf8-3ba3ef048cb8.woff2" as="font" type="font/woff2" />
+        <link rel="preload" href="/fonts/frutiger/0811514e-6660-4043-92c1-23d0b8caaa2f.woff2" as="font" type="font/woff2" />
 
-    <title>HMH - Assessment Engine</title>
-    <meta name="description" content="HMH Assessment Catalog">
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes" />
 
-    <link rel="icon" href="/images/hmhco.com.png">
-    <link rel="stylesheet" href="/css/theme.css">
-    <style>
-        #hmhUserId {
-            width: calc(100% - 10em);
-        }
-    </style>
-</head>
+        <title>HMH - Assessment Engine</title>
+        <meta name="description" content="HMH Assessment Catalog" />
 
-<body>
-    <fieldset>
-        <legend>Logged user token</legend>
-        <label>HMH User Id: <input id="hmhUserId"/></label>
-    </fieldset>
-    <h1>Assessment Engine</h1>
+        <link rel="icon" href="/images/hmhco.com.png" />
+        <link rel="stylesheet" href="/css/theme.css" />
+        <style>
+            #hmhUserId {
+                width: calc(100% - 10em);
+            }
+        </style>
+    </head>
 
-    <ul id="hooks"></ul>
+    <body>
+        <fieldset>
+            <legend>Logged user token</legend>
+            <label>HMH User Id: <input id="hmhUserId"/></label>
+        </fieldset>
+        <h1>Assessment Engine</h1>
 
-    <div id="showcase"></div>
+        <ul id="hooks"></ul>
 
-    <script type="module">
-        import { addLinks, setupRouter } from '/app/index.js'
+        <div id="showcase"></div>
 
-        addLinks('hooks');
-        setupRouter('showcase');
-    </script>
-</body>
+        <script type="module">
+            import { addLinks, setupRouter } from '/app/index.js';
 
+            addLinks('hooks');
+            setupRouter('showcase');
+        </script>
+    </body>
 </html>
